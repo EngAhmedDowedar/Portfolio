@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر شحن | اشحن ألعابك وتطبيقاتك المفضلة</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Vue.js for dynamic services -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Alpine.js for FAQ interactivity (with defer) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Header (Updated with Tracking Link) -->
+    <header class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-cyan-500/5">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-cyan-400 transition-transform hover:scale-105">⚡ متجر الشحن</a>
+            <div class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+                <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">الرئيسية</a>
+                <a href="#services" class="text-gray-300 hover:text-cyan-400 transition">خدماتنا</a>
+                <a href="#how-it-works" class="text-gray-300 hover:text-cyan-400 transition">كيف يعمل</a>
+                <a href="track.html" class="text-gray-300 hover:text-cyan-400 transition">تتبع الطلب</a>
+                <a href="#faq" class="text-gray-300 hover:text-cyan-400 transition">الأسئلة الشائعة</a>
+            </div>
+            <div class="hidden lg:block">
+                <a href="request.html" class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-2 px-6 rounded-full transition duration-300">ابدأ الشحن</a>
+            </div>
+            <div class="md:hidden">
+                <button id="burger-button" class="text-white focus:outline-none"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
+            <a href="index.html" class="block py-3 px-6 text-sm text-gray-200 hover:bg-gray-700">الرئيسية</a>
+            <a href="#services" class="block py-3 px-6 text-sm text-gray-200 hover:bg-gray-700">خدماتنا</a>
+            <a href="#how-it-works" class="block py-3 px-6 text-sm text-gray-200 hover:bg-gray-700">كيف يعمل</a>
+            <a href="track.html" class="block py-3 px-6 text-sm text-gray-200 hover:bg-gray-700">تتبع الطلب</a>
+            <a href="#faq" class="block py-3 px-6 text-sm text-gray-200 hover:bg-gray-700">الأسئلة الشائعة</a>
+            <div class="p-4"><a href="request.html" class="block text-center w-full bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-2 px-6 rounded-full transition duration-300">ابدأ الشحن الآن</a></div>
+        </div>
+    </header>
+
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative text-center py-24 md:py-32 px-6">
+             <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-300 to-cyan-400">مركز شحن الألعاب والتطبيقات</h1>
+             <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-8">المكان الأول لشحن ألعابك وتطبيقاتك المفضلة. أمان تام، أسعار مميزة، وتسليم فوري.</p>
+             <a href="request.html" class="bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30">ابدأ عملية الشحن</a>
+        </section>
+
+        <!-- Dynamic Services Section (Controlled by Vue.js) -->
+        <!-- 👈 تم إضافة x-ignore هنا لتجنب التضارب -->
+        <section id="services" class="py-20 bg-gray-900" x-ignore>
+            <div id="app" class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">أشهر التطبيقات والألعاب المدعومة</h2>
+                <div v-if="isLoading" class="text-center text-gray-400">جاري تحميل الخدمات...</div>
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <div v-for="service in services" :key="service.id" class="block bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="h-40 bg-cover bg-center" :style="{ backgroundImage: `url('${service.logo}')` }"></div>
+                        <div class="p-4 text-center"><h3 class="font-bold text-lg text-white">{{ service.name }}</h3></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How it works Section -->
+        <section id="how-it-works" class="py-20 bg-gray-800/50">
+            <!-- Content remains the same -->
+        </section>
+
+        <!-- FAQ Section (Controlled by Alpine.js) -->
+        <section id="faq" class="py-20 bg-gray-900" x-data="{ openFaq: 1 }">
+             <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">أسئلة شائعة</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="border-b border-gray-700">
+                        <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full text-right flex justify-between items-center py-5">
+                            <span class="text-xl font-semibold">هل عملية الشحن آمنة؟</span>
+                            <span :class="{'transform rotate-180': openFaq === 1}" class="transition-transform duration-300">▼</span>
+                        </button>
+                        <div x-show="openFaq === 1" class="pb-5 text-gray-400" style="display: none;">نعم، العملية آمنة 100%. نحن لا نطلب كلمة المرور الخاصة بك، كل ما نحتاجه هو الـ ID الخاص بك في اللعبة فقط.</div>
+                    </div>
+                    <div class="border-b border-gray-700">
+                        <button @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full text-right flex justify-between items-center py-5">
+                            <span class="text-xl font-semibold">كم من الوقت يستغرق الشحن؟</span>
+                            <span :class="{'transform rotate-180': openFaq === 2}" class="transition-transform duration-300">▼</span>
+                        </button>
+                        <div x-show="openFaq === 2" class="pb-5 text-gray-400" style="display: none;">الشحن فوري. بمجرد تأكيد الدفع، يتم إرسال الشحن إلى حسابك في غضون دقائق قليلة.</div>
+                    </div>
+                    <div class="border-b border-gray-700">
+                        <button @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full text-right flex justify-between items-center py-5">
+                            <span class="text-xl font-semibold">ما هي طرق الدفع المتاحة؟</span>
+                            <span :class="{'transform rotate-180': openFaq === 3}" class="transition-transform duration-300">▼</span>
+                        </button>
+                        <div x-show="openFaq === 3" class="pb-5 text-gray-400" style="display: none;">نحن ندعم جميع طرق الدفع الشائعة بما في ذلك البطاقات الائتمانية، باي بال، والمحافظ الإلكترونية.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 text-gray-300 py-10 md:py-16 border-t border-gray-800 shadow-inner-2xl shadow-gray-900/50">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12 text-right">
+            
+            <!-- Section 1: About Us / Brand Info -->
+            <div class="col-span-1 md:col-span-1 text-right">
+                <a href="index.html" class="text-3xl font-bold text-cyan-400 mb-4 inline-block transition-transform hover:scale-105">⚡ متجر الشحن</a>
+                <p class="text-gray-400 leading-relaxed mt-2">
+                    وجهتك الأولى لشحن الألعاب والخدمات الرقمية بأمان وسرعة. نلتزم بتقديم أفضل تجربة لعملائنا.
+                </p>
+            </div>
+
+            <!-- Section 2: Quick Links -->
+            <div class="col-span-1 text-right">
+                <h3 class="text-xl font-bold text-white mb-4 border-b-2 border-cyan-500 pb-2 inline-block">روابط سريعة</h3>
+                <ul class="space-y-2 mt-4">
+                    <li><a href="index.html" class="hover:text-cyan-400 transition">الرئيسية</a></li>
+                    <li><a href="index.html#services" class="hover:text-cyan-400 transition">خدماتنا</a></li>
+                    <li><a href="index.html#how-it-works" class="hover:text-cyan-400 transition">كيف يعمل</a></li>
+                    <li><a href="track.html" class="hover:text-cyan-400 transition">تتبع الطلب</a></li>
+                    <li><a href="index.html#faq" class="hover:text-cyan-400 transition">الأسئلة الشائعة</a></li>
+                    <li><a href="request.html" class="hover:text-cyan-400 transition">ابدأ الشحن</a></li>
+                </ul>
+            </div>
+
+            <!-- Section 3: Contact Info -->
+            <div class="col-span-1 text-right">
+                <h3 class="text-xl font-bold text-white mb-4 border-b-2 border-cyan-500 pb-2 inline-block">تواصل معنا</h3>
+                <ul class="space-y-2 mt-4">
+                    <li class="flex items-center justify-end rtl:flex-row-reverse">
+                        <i class="fas fa-phone-alt ml-2 text-cyan-400"></i> <!-- أيقونة الهاتف -->
+                        <span>+20 101 234 5678</span>
+                    </li>
+                    <li class="flex items-center justify-end rtl:flex-row-reverse">
+                        <i class="fas fa-envelope ml-2 text-cyan-400"></i> <!-- أيقونة البريد الإلكتروني -->
+                        <span>info@yourstore.com</span>
+                    </li>
+                    <li class="flex items-center justify-end rtl:flex-row-reverse">
+                        <i class="fas fa-map-marker-alt ml-2 text-cyan-400"></i> <!-- أيقونة الموقع -->
+                        <span>القاهرة، مصر</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Social Media (Always visible) -->
+            <div class="col-span-1 text-right">
+                <h3 class="text-xl font-bold text-white mb-4 border-b-2 border-cyan-500 pb-2 inline-block">تابعنا</h3>
+                <div class="flex justify-end space-x-4 rtl:space-x-reverse mt-4">
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition transform hover:scale-110">
+                        <i class="fab fa-facebook-f text-3xl"></i> <!-- أيقونة فيسبوك -->
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition transform hover:scale-110">
+                        <i class="fab fa-twitter text-3xl"></i> <!-- أيقونة تويتر -->
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition transform hover:scale-110">
+                        <i class="fab fa-instagram text-3xl"></i> <!-- أيقونة انستغرام -->
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Copyright Section -->
+        <div class="container mx-auto px-6 mt-12 pt-8 border-t border-gray-800 text-right text-gray-500 text-sm">
+            <p>&copy; 2025 متجر الشحن. جميع الحقوق محفوظة.</p>
+            <p class="mt-1">مشروع تم تطويره بواسطة <span class="text-cyan-400 font-semibold">Dowedar</span>.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/main-app.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
