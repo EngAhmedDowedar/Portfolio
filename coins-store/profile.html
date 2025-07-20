@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابي | متجر الشحن</title>
+    
+    <!-- Tailwind CSS -->
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#06b6d4',
+                    'primary-dark': '#0891b2',
+                    secondary: '#7e22ce',
+                    accent: '#ec4899',
+                }
+            }
+        }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    
+    <!-- SweetAlert2 for popups -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-dark: #0891b2;
+            --secondary: #7e22ce;
+            --accent: #ec4899;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        } 
+        
+        .tab-button {
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 1rem 0;
+        }
+        
+        .tab-button:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .tab-button.active:after {
+            width: 100%;
+        }
+        
+        .wallet-card {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(94, 234, 212, 0.3);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+        
+        .history-card {
+            transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-input {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(6, 182, 212, 0.5);
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.6s;
+        }
+        
+        .btn-primary:hover::after {
+            left: 120%;
+        }
+        
+        .danger-zone {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* أنماط إضافية للتحسينات */
+        .glow {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+        }
+        
+        .transition-smooth {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .bg-gradient-dark {
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+        }
+        
+        /* أنماط جديدة لاختيار الدولة */
+        .country-select {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            border-right: none;
+            border-radius: 0.5rem 0 0 0.5rem;
+            padding: 0.75rem;
+            color: white;
+            width: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .country-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+        
+        .phone-input {
+            border-radius: 0 0.5rem 0.5rem 0;
+            border-left: none;
+        }
+        
+        .country-flag {
+            width: 24px;
+            height: 16px;
+            display: inline-block;
+            margin-left: 8px;
+            background-size: cover;
+            vertical-align: middle;
+        }
+        
+        .phone-instruction {
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            border-left: 3px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .selected-country {
+            background: rgba(6, 182, 212, 0.2);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-dark text-white">
+
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-gray-900/90 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-cyan-500/10 transition-all duration-300" :class="{'py-2': scrolled}">
+            <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-cyan-400 flex items-center transition-smooth hover:text-cyan-300">
+                    <span class="mr-2">⚡</span>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">متجر الشحن</span>
+                </a>
+                
+                <div class="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
+                    <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">الرئيسية</a>
+                    <a href="games.html" class="text-gray-300 hover:text-cyan-400 transition">الألعاب</a>
+                    <a href="apps.html" class="text-gray-300 hover:text-cyan-400 transition">التطبيقات</a>
+                    <a href="numbers.html" class="text-gray-300 hover:text-cyan-400 transition">الأرقام</a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+                    <a v-if="user" href="profile.html" class="text-cyan-400 font-semibold flex items-center glow px-4 py-2 rounded-full">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-4 rounded-lg text-sm flex items-center transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i> خروج
+                    </button>
+                </div>
+                
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none text-2xl" @click="mobileMenuOpen = !mobileMenuOpen">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden bg-gray-800/95 backdrop-blur-lg transition-all duration-300 ease-in-out overflow-hidden"
+                 :class="mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'">
+                <a href="index.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-home mr-3"></i> الرئيسية
+                </a>
+                <a href="games.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-gamepad mr-3"></i> الألعاب
+                </a>
+                <a href="apps.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-mobile-alt mr-3"></i> التطبيقات
+                </a>
+                <a href="numbers.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-truck mr-3"></i> الأرقام
+                </a>
+                <hr class="border-gray-700">
+                <div class="p-4 flex flex-col space-y-3">
+                    <a v-if="user" href="profile.html" class="btn-primary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-full flex items-center justify-center transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i> تسجيل خروج
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 md:px-6 py-8">
+            <div v-if="isLoading" class="min-h-screen flex items-center justify-center">
+                <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-cyan-500 mb-4"></div>
+                    <p class="text-xl">جاري تحميل بيانات حسابك...</p>
+                </div>
+            </div>
+            
+            <div v-else-if="user" class="max-w-4xl mx-auto fade-in">
+                <!-- Tabs Navigation -->
+                <div class="mb-8 border-b border-gray-700">
+                    <div class="flex space-x-4 sm:space-x-6 rtl:space-x-reverse overflow-x-auto">
+                        <button @click="activeTab = 'profile'" 
+                                :class="[activeTab === 'profile' ? 'text-cyan-400' : 'text-gray-400 hover:text-gray-200']" 
+                                class="tab-button whitespace-nowrap py-4 px-1 font-medium text-lg flex items-center">
+                            <i class="fas fa-user-circle mr-2"></i>
+                            الملف الشخصي
+                        </button>
+                        <button @click="activeTab = 'history'" 
+                                :class="[activeTab === 'history' ? 'text-cyan-400' : 'text-gray-400 hover:text-gray-200']" 
+                                class="tab-button whitespace-nowrap py-4 px-1 font-medium text-lg flex items-center">
+                            <i class="fas fa-history mr-2"></i>
+                            سجل العمليات
+                        </button>
+                        <button @click="activeTab = 'settings'" 
+                                :class="[activeTab === 'settings' ? 'text-cyan-400' : 'text-gray-400 hover:text-gray-200']" 
+                                class="tab-button whitespace-nowrap py-4 px-1 font-medium text-lg flex items-center">
+                            <i class="fas fa-cog mr-2"></i>
+                            إعدادات الحساب
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Tab Content -->
+                <div v-show="activeTab === 'profile'" class="space-y-8 slide-in">
+                    <div class="flex items-center">
+                        <div class="bg-cyan-500/20 rounded-full w-16 h-16 flex items-center justify-center text-2xl text-cyan-400 border border-cyan-400/30">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="mr-4">
+                            <h1 class="text-2xl sm:text-3xl font-bold">مرحباً, {{ user.displayName || user.email }}</h1>
+                            <p class="text-gray-400">عضو منذ {{ formatDate(user.createdAt) }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-card rounded-xl p-6 flex flex-col sm:flex-row justify-between items-center gap-4 glow">
+                        <div class="flex-1">
+                            <div class="flex items-center">
+                                <i class="fas fa-wallet text-cyan-400 text-xl mr-2"></i>
+                                <h2 class="text-gray-400 text-lg">رصيد المحفظة الحالي</h2>
+                            </div>
+                            <p class="text-3xl sm:text-4xl font-bold text-cyan-400 mt-2">{{ user.walletBalance?.toFixed(2) || '0.00' }} $</p>
+                        </div>
+                        <a href="add-funds.html" class="btn-primary text-white font-bold py-3 px-6 rounded-lg transition w-full sm:w-auto text-center hover:scale-105">
+                            <i class="fas fa-plus mr-2"></i> إضافة رصيد
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-info-circle text-cyan-400 mr-2"></i>
+                                معلومات الحساب
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-gray-400">البريد الإلكتروني</p>
+                                    <p class="text-lg">{{ user.email }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">اسم المستخدم</p>
+                                    <p class="text-lg">{{ user.username || 'غير محدد' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">رقم الهاتف</p>
+                                    <p class="text-lg">{{ user.phone || 'غير محدد' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-chart-line text-cyan-400 mr-2"></i>
+                                إحصائيات
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-gray-400">إجمالي المشتريات</p>
+                                    <p class="text-lg">{{ purchaseOrders.length }} عملية</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">إجمالي الشحنات</p>
+                                    <p class="text-lg">{{ fundRequests.length }} عملية</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">تاريخ الانضمام</p>
+                                    <p class="text-lg">{{ formatDate(user.createdAt) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab Content -->
+                <div v-show="activeTab === 'history'" class="space-y-8 slide-in">
+                    <section>
+                        <h2 class="text-2xl sm:text-3xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-shopping-cart text-cyan-400 mr-3"></i>
+                            سجل المشتريات
+                        </h2>
+                        <div v-if="purchaseOrders.length === 0" class="text-center py-12 bg-gray-800/50 rounded-xl border border-gray-700">
+                            <i class="fas fa-shopping-cart text-4xl text-gray-600 mb-4"></i>
+                            <p class="text-gray-500 text-xl">ليس لديك أي مشتريات سابقة</p>
+                            <a href="games.html" class="inline-block mt-4 text-cyan-400 hover:text-cyan-300 transition">
+                                تصفح المتجر
+                            </a>
+                        </div>
+                        <div v-else class="space-y-4">
+                            <div v-for="order in purchaseOrders" :key="order.id" 
+                                 class="history-card rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div class="flex-1">
+                                    <div class="font-bold text-white text-lg">{{ order.serviceName }}</div>
+                                    <div class="text-sm text-gray-400 mt-1 flex items-center">
+                                        <span>{{ order.packageName || order.convertedAmount }}</span>
+                                        <span class="mx-2">|</span>
+                                        <span>{{ formatDate(order.createdAt) }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="font-bold text-xl">{{ order.price || order.amountUSD }}$</span>
+                                    <span :class="{'status-completed': order.status === 'completed', 'status-pending': order.status === 'pending'}" 
+                                          class="status-badge px-3 py-1 ml-4">
+                                        {{ order.status === 'completed' ? 'مكتمل' : 'قيد الانتظار' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl sm:text-3xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-coins text-cyan-400 mr-3"></i>
+                            سجل شحن الرصيد
+                        </h2>
+                        <div v-if="fundRequests.length === 0" class="text-center py-12 bg-gray-800/50 rounded-xl border border-gray-700">
+                            <i class="fas fa-wallet text-4xl text-gray-600 mb-4"></i>
+                            <p class="text-gray-500 text-xl">ليس لديك أي عمليات شحن سابقة</p>
+                            <a href="add-funds.html" class="inline-block mt-4 text-cyan-400 hover:text-cyan-300 transition">
+                                شحن الرصيد الآن
+                            </a>
+                        </div>
+                        <div v-else class="space-y-4">
+                            <div v-for="req in fundRequests" :key="req.id" 
+                                 class="history-card rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div class="flex-1">
+                                    <div class="font-bold text-white text-lg">إيداع مبلغ</div>
+                                    <div class="text-sm text-gray-400 mt-1 flex items-center">
+                                        <span>{{ formatDate(req.createdAt) }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="font-bold text-xl">{{ req.amount }}$</span>
+                                    <span :class="{'status-completed': req.status === 'approved', 'status-pending': req.status === 'pending', 'status-rejected': req.status === 'rejected'}" 
+                                          class="status-badge px-3 py-1 ml-4">
+                                        {{ {'approved': 'مكتمل', 'pending': 'قيد الانتظار', 'rejected': 'مرفوض'}[req.status] }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Settings Tab Content -->
+                <div v-show="activeTab === 'settings'" class="space-y-8 slide-in">
+                    <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-user-edit text-cyan-400 mr-3"></i>
+                            تعديل بيانات الحساب
+                        </h2>
+                        <form @submit.prevent="updateProfile" class="max-w-lg">
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">الاسم (Display Name)</label>
+                                <input v-model="profileForm.displayName" type="text" 
+                                       class="form-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">اسم المستخدم (Username)</label>
+                                <input v-model="profileForm.username" type="text" 
+                                       class="form-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full flex justify-center hover:scale-[1.02]">
+                                <span v-if="!isSaving">حفظ التغييرات</span>
+                                <span v-else><span class="loading-spinner mr-2"></span> جاري الحفظ</span>
+                            </button>
+                        </form>
+                    </section>
+                    
+                    <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-mobile-alt text-cyan-400 mr-3"></i>
+                            تغيير رقم الهاتف
+                        </h2>
+                        <form @submit.prevent="changePhoneNumber" class="max-w-lg">
+                            <div class="mb-4">
+                                <label class="block mb-2 text-gray-400">رقم الهاتف الحالي</label>
+                                <p class="text-lg">{{ user.phone || 'غير محدد' }}</p>
+                            </div>
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">رقم الهاتف الجديد</label>
+                                
+                                <div class="flex mb-3">
+                                    <select v-model="phoneForm.countryCode" class="country-select">
+                                        <option value="+966">🇸🇦 +966 (السعودية)</option>
+                                        <option value="+971">🇦🇪 +971 (الإمارات)</option>
+                                        <option value="+20">🇪🇬 +20 (مصر)</option>
+                                        <option value="+962">🇯🇴 +962 (الأردن)</option>
+                                        <option value="+973">🇧🇭 +973 (البحرين)</option>
+                                        <option value="+974">🇶🇦 +974 (قطر)</option>
+                                        <option value="+968">🇴🇲 +968 (عُمان)</option>
+                                        <option value="+965">🇰🇼 +965 (الكويت)</option>
+                                        <option value="+213">🇩🇿 +213 (الجزائر)</option>
+                                        <option value="+212">🇲🇦 +212 (المغرب)</option>
+                                        <option value="+216">🇹🇳 +216 (تونس)</option>
+                                        <option value="+249">🇸🇩 +249 (السودان)</option>
+                                        <option value="+964">🇮🇶 +964 (العراق)</option>
+                                        <option value="+963">🇸🇾 +963 (سوريا)</option>
+                                        <option value="+961">🇱🇧 +961 (لبنان)</option>
+                                        <option value="+967">🇾🇪 +967 (اليمن)</option>
+                                        <option value="+1">🇺🇸 +1 (الولايات المتحدة)</option>
+                                        <option value="+44">🇬🇧 +44 (المملكة المتحدة)</option>
+                                        <option value="+33">🇫🇷 +33 (فرنسا)</option>
+                                        <option value="+49">🇩🇪 +49 (ألمانيا)</option>
+                                        <option value="+81">🇯🇵 +81 (اليابان)</option>
+                                        <option value="+86">🇨🇳 +86 (الصين)</option>
+                                        <option value="+91">🇮🇳 +91 (الهند)</option>
+                                        <option value="+52">🇲🇽 +52 (المكسيك)</option>
+                                        <option value="+55">🇧🇷 +55 (البرازيل)</option>
+                                    </select>
+                                    <input v-model="phoneForm.newPhone" type="tel" 
+                                           placeholder="أدخل رقم الهاتف"
+                                           class="form-input phone-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500" required>
+                                </div>
+                                
+                                <div class="selected-country">
+                                    <i class="fas fa-globe text-cyan-400 mr-2"></i>
+                                    <span>البلد المختار: {{ getCountryName(phoneForm.countryCode) }}</span>
+                                </div>
+                                
+                                <div class="phone-instruction mt-3">
+                                    <i class="fas fa-info-circle text-cyan-400 mr-2"></i>
+                                    يمكنك إدخال رقم هاتف من أي دولة
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full flex justify-center hover:scale-[1.02]">
+                                <span v-if="!isSavingPhone">تغيير رقم الهاتف</span>
+                                <span v-else><span class="loading-spinner mr-2"></span> جاري التغيير</span>
+                            </button>
+                        </form>
+                    </section>
+                    
+                    <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-envelope text-cyan-400 mr-3"></i>
+                            تغيير البريد الإلكتروني
+                        </h2>
+                        <form @submit.prevent="changeEmail" class="max-w-lg">
+                            <div class="mb-4">
+                                <label class="block mb-2 text-gray-400">البريد الإلكتروني الحالي</label>
+                                <p class="text-lg">{{ user.email }}</p>
+                            </div>
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">البريد الإلكتروني الجديد</label>
+                                <input v-model="emailForm.newEmail" type="email" 
+                                       class="form-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500" required>
+                            </div>
+                            <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full flex justify-center hover:scale-[1.02]">
+                                <span v-if="!isSaving">تغيير البريد</span>
+                                <span v-else><span class="loading-spinner mr-2"></span> جاري التغيير</span>
+                            </button>
+                        </form>
+                    </section>
+                    
+                    <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-lock text-cyan-400 mr-3"></i>
+                            تغيير كلمة المرور
+                        </h2>
+                        <form @submit.prevent="changePassword" class="max-w-lg">
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">كلمة المرور الجديدة</label>
+                                <input v-model="passwordForm.newPassword" type="password" 
+                                       class="form-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div class="mb-5">
+                                <label class="block mb-2 text-gray-400">تأكيد كلمة المرور الجديدة</label>
+                                <input v-model="passwordForm.confirmPassword" type="password" 
+                                       class="form-input w-full p-3 rounded-lg focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full flex justify-center hover:scale-[1.02]">
+                                <span v-if="!isSaving">تغيير كلمة المرور</span>
+                                <span v-else><span class="loading-spinner mr-2"></span> جاري التغيير</span>
+                            </button>
+                        </form>
+                    </section>
+                    
+                    <section class="danger-zone rounded-xl p-6 border border-red-500/30">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center text-red-400">
+                            <i class="fas fa-exclamation-triangle mr-3"></i>
+                            منطقة الخطر
+                        </h2>
+                        <p class="text-gray-400 mb-6">
+                            حذف حسابك إجراء نهائي لا يمكن التراجع عنه. سيتم حذف جميع بياناتك وطلباتك بشكل دائم.
+                        </p>
+                        <button @click="deleteAccount" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg w-full flex justify-center transition hover:scale-[1.02]">
+                            <i class="fas fa-trash-alt mr-2"></i> حذف الحساب نهائيًا
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/profile-app.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</body>
+</html>

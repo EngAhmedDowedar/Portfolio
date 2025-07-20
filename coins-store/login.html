@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | متجر الشحن</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen px-4">
+    <div id="login-app" class="w-full max-w-md bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-cyan-400 mb-8">تسجيل الدخول</h1>
+        <form @submit.prevent="loginUser">
+            <div class="mb-4">
+                <label for="email" class="block mb-2 text-sm sm:text-base">البريد الإلكتروني</label>
+                <input v-model="form.email" type="email" id="email" class="w-full bg-gray-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" required>
+            </div>
+            <!-- (مُحدّث) قسم كلمة المرور -->
+            <div class="relative mb-6">
+                <label for="password" class="block mb-2 text-sm sm:text-base">كلمة المرور</label>
+                <input v-model="form.password" :type="passwordFieldType" id="password" class="w-full bg-gray-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-10" required>
+                <!-- زر أيقونة العين -->
+                <button type="button" @click="togglePasswordVisibility" class="absolute top-10 left-3 text-gray-400">
+                    <!-- أيقونة العين المفتوحة -->
+                    <svg v-if="passwordFieldType === 'password'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    <!-- أيقونة العين المغلقة -->
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a10.025 10.025 0 015.364-6.497M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 2a9.986 9.986 0 01-3.273 4.532M3 3l18 18" /></svg>
+                </button>
+            </div>
+            <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 rounded-lg transition text-lg">تسجيل الدخول</button>
+        </form>
+        <p class="text-center text-gray-400 mt-6">
+            ليس لديك حساب؟ <a href="register.html" class="text-cyan-400 hover:underline">أنشئ حسابًا جديدًا</a>
+        </p>
+    </div>
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

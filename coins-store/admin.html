@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | متجر الشحن</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 for popups -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Compressor.js for image compression -->
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs/dist/compressor.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style> 
+        body { 
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+        } 
+        
+        /* تحسينات عامة */
+        .sidebar-transition { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-gradient {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 234, 212, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(145deg, #06b6d4, #0891b2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(6, 182, 212, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(40, 51, 69, 0.8);
+            border-color: #06b6d4;
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .nav-item:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+        
+        .nav-item.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: #06b6d4;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* تحسينات الجدول */
+        .table-header {
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .table-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(94, 234, 212, 0.1);
+        }
+        
+        .table-row:hover {
+            background: rgba(94, 234, 212, 0.05);
+        }
+        
+        /* تحسينات الإدخال */
+        .form-input {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+        
+        /* تحسينات المودال */
+        .modal-content {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(94, 234, 212, 0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* تحسينات التمرير */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(94, 234, 212, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(94, 234, 212, 0.5);
+        }
+        
+        /* تحسينات إضافية */
+        .glow {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+        }
+        
+        .transition-smooth {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .highlight-box {
+            background: linear-gradient(145deg, rgba(6, 182, 212, 0.1), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(94, 234, 212, 0.2);
+        }
+        
+        .header-gradient {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-bottom: 1px solid rgba(94, 234, 212, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* تحسينات التجاوب مع الشاشات */
+        @media (max-width: 768px) {
+            /* تحسينات الجداول على الشاشات الصغيرة */
+            .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .responsive-table table {
+                min-width: 600px;
+            }
+            
+            /* تحسينات بطاقات الخدمات */
+            .service-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .service-card .service-actions {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            /* تحسينات الأزرار على الشاشات الصغيرة */
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons button {
+                flex: 1;
+                min-width: 80px;
+            }
+            
+            /* تحسينات قسم ملف المدير */
+            .profile-section {
+                padding: 1rem;
+            }
+            
+            .profile-section h2 {
+                font-size: 1.25rem;
+            }
+            
+            /* تحسينات رأس الصفحة */
+            .header-title {
+                font-size: 1rem;
+            }
+            
+            .admin-name {
+                display: none;
+            }
+            
+            /* تحسينات الشريط الجانبي */
+            .sidebar {
+                width: 85%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* تحسينات إضافية للشاشات الصغيرة جداً */
+            .header-title {
+                font-size: 0.875rem;
+            }
+            
+            .action-buttons button {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .service-card h3 {
+                font-size: 1rem;
+            }
+            
+            .profile-section {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div id="admin-app" class="hidden">
+        <!-- Sidebar and Overlay -->
+        <div @click="isSidebarOpen = false" v-show="isSidebarOpen" class="fixed inset-0 bg-black/60 z-20 transition-opacity"></div>
+        <aside :class="isSidebarOpen ? 'translate-x-0' : 'translate-x-full'" class="sidebar-transition transform bg-gray-800 text-white w-64 p-5 flex flex-col fixed inset-y-0 right-0 z-30 sidebar">
+            <div class="flex items-center mb-10">
+                <div class="bg-cyan-500/20 rounded-full w-12 h-12 flex items-center justify-center text-xl text-cyan-400">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h1 class="text-xl font-bold text-cyan-400 mr-3">لوحة التحكم</h1>
+            </div>
+            <nav class="flex flex-col space-y-2">
+                <button @click="setView('purchaseOrders')" :class="{'nav-item active': currentView === 'purchaseOrders', 'nav-item': currentView !== 'purchaseOrders'}" class="flex items-center">
+                    <i class="fas fa-shopping-cart ml-2"></i>
+                    طلبات الشراء
+                </button>
+                <button @click="setView('fundRequests')" :class="{'nav-item active': currentView === 'fundRequests', 'nav-item': currentView !== 'fundRequests'}" class="flex items-center">
+                    <i class="fas fa-wallet ml-2"></i>
+                    طلبات شحن الرصيد
+                </button>
+                <button @click="setView('services')" :class="{'nav-item active': currentView === 'services', 'nav-item': currentView !== 'services'}" class="flex items-center">
+                    <i class="fas fa-cube ml-2"></i>
+                    إدارة الخدمات
+                </button>
+                <button @click="setView('users')" :class="{'nav-item active': currentView === 'users', 'nav-item': currentView !== 'users'}" class="flex items-center">
+                    <i class="fas fa-users ml-2"></i>
+                    إدارة المستخدمين
+                </button>
+                <hr class="border-gray-700 my-2">
+                <button @click="setView('adminProfile')" :class="{'nav-item active': currentView === 'adminProfile', 'nav-item': currentView !== 'adminProfile'}" class="flex items-center">
+                    <i class="fas fa-user-cog ml-2"></i>
+                    إدارة حسابي
+                </button>
+            </nav>
+            <button @click="logout" class="mt-auto btn-primary text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center">
+                <i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج
+            </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-col min-h-screen">
+            <!-- Header with Burger Button (Always visible) -->
+            <header class="header-gradient shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button @click="isSidebarOpen = !isSidebarOpen" class="text-white p-2 rounded-md hover:bg-gray-700/50 mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <h2 class="text-xl font-bold text-white header-title">{{ pageTitle }}</h2>
+                </div>
+                <div class="flex items-center">
+                    <div class="bg-cyan-500/20 rounded-full w-10 h-10 flex items-center justify-center text-xl text-cyan-400">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="mr-3 admin-name">{{ adminProfile?.displayName || 'المدير' }}</span>
+                </div>
+            </header>
+
+            <!-- Scrollable Main Content -->
+            <main class="flex-1 p-4 md:p-8">
+                <!-- Purchase Orders View -->
+                <div v-if="currentView === 'purchaseOrders'">
+                    <div v-if="isLoading" class="text-center py-10">جاري تحميل الطلبات...</div>
+                    <div v-else-if="purchaseOrders.length === 0" class="text-center py-10 bg-gray-800 rounded-lg"><h2 class="text-2xl text-gray-500">لا توجد طلبات شراء حاليًا.</h2></div>
+                    <div v-else>
+                        <!-- Mobile Cards View -->
+                        <div class="space-y-4 md:hidden">
+                            <div v-for="order in purchaseOrders" :key="order.id" class="card-gradient rounded-lg p-4 shadow card-hover">
+                                <div class="flex justify-between items-start border-b border-gray-700 pb-2 mb-2">
+                                    <div>
+                                        <div class="font-bold text-white">{{ order.serviceName }}</div>
+                                        <div class="text-sm text-gray-400 font-mono">{{ order.userEmail }}</div>
+                                    </div>
+                                    <span :class="order.status === 'completed' ? 'status-completed' : 'status-pending'" class="status-badge">{{ order.status === 'completed' ? 'مكتمل' : 'قيد الانتظار' }}</span>
+                                </div>
+                                <div class="text-sm space-y-1 text-gray-300">
+                                    <p><span class="text-gray-500">ID اللاعب:</span> <span class="font-mono text-cyan-300">{{ order.playerId }}</span></p>
+                                    <p><span class="text-gray-500">التاريخ:</span> {{ formatDate(order.createdAt) }}</p>
+                                </div>
+                                <div class="mt-4 flex items-center justify-end space-x-2 rtl:space-x-reverse action-buttons">
+                                    <button @click="openOrderModal(order)" class="btn-secondary text-xs py-2 px-3 rounded">عرض التفاصيل</button>
+                                    <button v-if="order.status !== 'completed'" @click="updateOrderStatus(order)" class="btn-primary text-xs py-2 px-3 rounded">إكمال</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Desktop Table View -->
+                        <div class="hidden md:block responsive-table">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-400 uppercase table-header">
+                                    <tr>
+                                        <th class="px-4 py-3">التاريخ</th>
+                                        <th class="px-4 py-3">بيانات المستخدم</th>
+                                        <th class="px-4 py-3">الخدمة</th>
+                                        <th class="px-4 py-3">ID اللاعب</th>
+                                        <th class="px-4 py-3">الحالة</th>
+                                        <th class="px-4 py-3">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="order in purchaseOrders" :key="order.id" class="table-row">
+                                        <td class="px-4 py-4">{{ formatDate(order.createdAt) }}</td>
+                                        <td class="px-4 py-4 font-mono text-gray-300">{{ order.userEmail }}</td>
+                                        <td class="px-4 py-4 font-medium text-white">{{ order.serviceName }}</td>
+                                        <td class="px-4 py-4 font-mono text-cyan-300">{{ order.playerId }}</td>
+                                        <td class="px-4 py-4">
+                                            <span :class="order.status === 'completed' ? 'status-completed' : 'status-pending'" class="status-badge">
+                                                {{ order.status === 'completed' ? 'مكتمل' : 'قيد الانتظار' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 flex items-center space-x-2 rtl:space-x-reverse action-buttons">
+                                            <button @click="openOrderModal(order)" class="btn-secondary text-xs py-1 px-3 rounded">عرض</button>
+                                            <button v-if="order.status !== 'completed'" @click="updateOrderStatus(order)" class="btn-primary text-xs py-1 px-3 rounded">إكمال</button>
+                                            <button @click="deleteOrder(order.id, order.playerId)" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-1 px-3 rounded">حذف</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fund Requests View -->
+                <div v-if="currentView === 'fundRequests'">
+                    <div v-if="isLoading" class="text-center py-10">جاري تحميل الطلبات...</div>
+                    <div v-else-if="fundRequests.length === 0" class="text-center py-10 bg-gray-800 rounded-lg"><h2 class="text-2xl text-gray-500">لا توجد طلبات شحن رصيد حاليًا.</h2></div>
+                    <div v-else>
+                         <div class="space-y-4 md:hidden">
+                            <div v-for="req in fundRequests" :key="req.id" class="card-gradient rounded-lg p-4 shadow card-hover">
+                                <div class="flex justify-between items-center border-b border-gray-700 pb-2 mb-2">
+                                    <div class="font-bold text-white text-lg">{{ req.amount }}$</div>
+                                    <span class="status-badge status-pending">قيد الانتظار</span>
+                                </div>
+                                <div class="text-sm space-y-1 text-gray-300">
+                                    <p><span class="text-gray-500">المستخدم:</span> <span class="font-mono">{{ req.userEmail }}</span></p>
+                                    <p><span class="text-gray-500">التاريخ:</span> {{ formatDate(req.createdAt) }}</p>
+                                </div>
+                                <div class="mt-4 flex items-center justify-end space-x-2 rtl:space-x-reverse action-buttons">
+                                    <button @click="openFundRequestModal(req)" class="btn-secondary text-xs py-2 px-3 rounded">عرض</button>
+                                    <button @click="approveFundRequest(req)" class="btn-primary text-xs py-2 px-3 rounded">موافقة</button>
+                                    <button @click="rejectFundRequest(req)" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-2 px-3 rounded">رفض</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block responsive-table">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-400 uppercase table-header">
+                                    <tr>
+                                        <th class="px-4 py-3">التاريخ</th>
+                                        <th class="px-4 py-3">البريد الإلكتروني</th>
+                                        <th class="px-4 py-3">المبلغ</th>
+                                        <th class="px-4 py-3">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="req in fundRequests" :key="req.id" class="table-row">
+                                        <td class="px-4 py-4">{{ formatDate(req.createdAt) }}</td>
+                                        <td class="px-4 py-4 font-mono text-gray-300">{{ req.userEmail }}</td>
+                                        <td class="px-4 py-4 font-bold text-cyan-400 text-lg">{{ req.amount }}$</td>
+                                        <td class="px-4 py-4 flex items-center space-x-2 rtl:space-x-reverse action-buttons">
+                                            <button @click="openFundRequestModal(req)" class="btn-secondary text-xs py-1 px-3 rounded">عرض التفاصيل</button>
+                                            <button @click="approveFundRequest(req)" class="btn-primary text-xs py-1 px-3 rounded">موافقة</button>
+                                            <button @click="rejectFundRequest(req)" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-1 px-3 rounded">رفض</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Services View -->
+                <div v-if="currentView === 'services'">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4 md:mb-0">الخدمات والمنتجات</h2>
+                        <button @click="openServiceModal()" class="btn-primary text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center w-full md:w-auto">
+                            <i class="fas fa-plus ml-2"></i> إضافة خدمة جديدة
+                        </button>
+                    </div>
+                    <div v-if="isLoading" class="text-center py-10">جاري تحميل الخدمات...</div>
+                    <div v-else class="space-y-4">
+                        <div v-for="service in services" :key="service.id" class="card-gradient rounded-lg p-4 card-hover service-card">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-center w-full">
+                                <div class="flex items-center mb-2 md:mb-0">
+                                    <img :src="service.logo || 'https://placehold.co/48x48/1F2937/D1D5DB?text=Logo'" class="w-12 h-12 rounded-md object-cover ml-4 bg-gray-700">
+                                    <h3 class="text-xl font-bold">{{ service.name }}</h3>
+                                </div>
+                                <div class="service-actions flex">
+                                    <button @click="openServiceModal(service)" class="text-yellow-400 hover:text-yellow-300 mr-4">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button @click="deleteService(service.id, service.name)" class="text-red-500 hover:text-red-400">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-400">
+                                <span>التصنيف: <span class="font-semibold text-cyan-400">{{ {game: 'لعبة', app: 'تطبيق', number: 'رقم'}[service.category] }}</span></span>
+                                <span v-if="service.category === 'game'" class="mr-4">| معدل التحويل: <span class="font-semibold text-cyan-400">{{ service.conversionRate }}</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Users View -->
+                <div v-if="currentView === 'users'">
+                    <div v-if="isLoading" class="text-center py-10">جاري تحميل المستخدمين...</div>
+                    <div v-else class="responsive-table">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-400 uppercase table-header">
+                                <tr>
+                                    <th class="px-4 py-3">البريد الإلكتروني</th>
+                                    <th class="px-4 py-3">الاسم</th>
+                                    <th class="px-4 py-3">الرصيد</th>
+                                    <th class="px-4 py-3">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in users" :key="user.id" class="table-row">
+                                    <td class="px-4 py-4 font-mono text-gray-300">{{ user.email }}</td>
+                                    <td class="px-4 py-4">{{ user.displayName || 'لا يوجد' }}</td>
+                                    <td class="px-4 py-4 font-bold text-cyan-400">{{ user.walletBalance.toFixed(2) }}$</td>
+                                    <td class="px-4 py-4 flex items-center space-x-2 rtl:space-x-reverse action-buttons">
+                                        <button @click="openUserEditModal(user)" class="btn-secondary text-xs py-1 px-3 rounded">تعديل</button>
+                                        <button @click="deleteUser(user.id, user.email)" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-1 px-3 rounded">حذف</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Admin Profile View -->
+                <div v-if="currentView === 'adminProfile'">
+                    <div v-if="isLoading" class="text-center py-10">جاري تحميل بيانات حسابك...</div>
+                    <div v-else class="space-y-8 max-w-xl mx-auto">
+                        <section class="card-gradient rounded-lg p-6 slide-in profile-section">
+                            <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center">
+                                <i class="fas fa-user-edit text-cyan-400 mr-3"></i>
+                                تعديل بيانات الحساب
+                            </h2>
+                            <form @submit.prevent="updateAdminProfile">
+                                <div class="mb-4">
+                                    <label class="block mb-2">الاسم (Display Name)</label>
+                                    <input v-model="adminProfileForm.displayName" type="text" class="form-input w-full p-3 rounded">
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block mb-2">اسم المستخدم (Username)</label>
+                                    <input v-model="adminProfileForm.username" type="text" class="form-input w-full p-3 rounded">
+                                </div>
+                                <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full">حفظ التغييرات</button>
+                            </form>
+                        </section>
+                        <section class="card-gradient rounded-lg p-6 slide-in profile-section" style="animation-delay: 0.2s">
+                            <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center">
+                                <i class="fas fa-envelope text-cyan-400 mr-3"></i>
+                                تغيير البريد الإلكتروني
+                            </h2>
+                            <form @submit.prevent="updateAdminEmail">
+                                <div class="mb-4">
+                                    <label class="block mb-2">البريد الإلكتروني الحالي</label>
+                                    <p class="text-gray-400 p-2 bg-gray-700/50 rounded">{{ adminProfile.email }}</p>
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block mb-2">البريد الإلكتروني الجديد</label>
+                                    <input v-model="adminEmailForm.newEmail" type="email" class="form-input w-full p-3 rounded" required>
+                                </div>
+                                <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full">تغيير البريد</button>
+                            </form>
+                        </section>
+                        <section class="card-gradient rounded-lg p-6 slide-in profile-section" style="animation-delay: 0.4s">
+                            <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center">
+                                <i class="fas fa-lock text-cyan-400 mr-3"></i>
+                                تغيير كلمة المرور
+                            </h2>
+                            <form @submit.prevent="updateAdminPassword">
+                                <div class="relative mb-4">
+                                    <label class="block mb-2">كلمة المرور الجديدة</label>
+                                    <input v-model="adminPasswordForm.newPassword" :type="adminPasswordFieldType" class="form-input w-full p-3 rounded pr-10">
+                                    <button type="button" @click="toggleAdminPasswordVisibility" class="absolute top-11 left-3 text-gray-400">
+                                        <svg v-if="adminPasswordFieldType === 'password'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a10.025 10.025 0 015.364-6.497M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 2a9.986 9.986 0 01-3.273 4.532M3 3l18 18" /></svg>
+                                    </button>
+                                </div>
+                                <div class="relative mb-6">
+                                    <label class="block mb-2">تأكيد كلمة المرور الجديدة</label>
+                                    <input v-model="adminPasswordForm.confirmPassword" :type="adminPasswordFieldType" class="form-input w-full p-3 rounded pr-10">
+                                </div>
+                                <button type="submit" class="btn-primary text-white font-bold py-3 px-6 rounded-lg w-full">تغيير كلمة المرور</button>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Add/Edit Service Modal -->
+        <div v-if="isModalOpen" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div class="modal-content rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6 text-center">{{ isEditing ? 'تعديل خدمة' : 'إضافة خدمة جديدة' }}</h2>
+                <form @submit.prevent="handleServiceSubmit">
+                    <div class="mb-4"><label class="block mb-2">ID الخدمة (انجليزي)</label><input v-model="serviceForm.id" type="text" class="form-input w-full p-3 rounded" :disabled="isEditing" required></div>
+                    <div class="mb-4"><label class="block mb-2">اسم الخدمة</label><input v-model="serviceForm.name" type="text" class="form-input w-full p-3 rounded" required></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block mb-2">التصنيف</label>
+                            <select v-model="serviceForm.category" class="form-input w-full p-3 rounded">
+                                <option value="game">لعبة</option>
+                                <option value="app">تطبيق</option>
+                                <option value="number">رقم</option>
+                            </select>
+                        </div>
+                        <div v-if="serviceForm.category === 'game'" class="mb-4">
+                            <label class="block mb-2">كم جوهرة لكل 1 دولار؟</label>
+                            <input v-model.number="serviceForm.conversionRate" type="number" placeholder="مثال: 300" class="form-input w-full p-3 rounded" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-2">لوجو الخدمة (صورة)</label>
+                        <input type="file" @change="handleLogoFileSelect" accept="image/jpeg, image/png" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+                        <div v-if="newLogoBase64 || (serviceForm.logo && isEditing)" class="mt-4 text-center">
+                            <span class="text-gray-400 block mb-2">المعاينة:</span>
+                            <img :src="newLogoBase64 || serviceForm.logo" class="max-w-[120px] h-auto rounded-md mx-auto border border-gray-600">
+                        </div>
+                    </div>
+                    <div v-if="serviceForm.category === 'app' || serviceForm.category === 'number'" class="mt-4 border-t border-gray-700 pt-4">
+                        <h3 class="mb-2">الباقات/المنتجات</h3>
+                        <div v-for="(pkg, index) in serviceForm.packages" :key="index" class="flex items-center space-x-2 mb-2 rtl:space-x-reverse">
+                            <input v-model="pkg.name" placeholder="اسم الباقة/الرقم" class="form-input w-1/2 p-2 rounded"><input v-model.number="pkg.price" type="number" placeholder="السعر" class="form-input w-1/4 p-2 rounded"><button type="button" @click="removePackage(index)" class="text-red-500">X</button>
+                        </div>
+                        <button type="button" @click="addPackage" class="text-sm text-cyan-400 mb-2">+ إضافة باقة</button>
+                    </div>
+                    <div class="flex justify-end space-x-4 rtl:space-x-reverse border-t border-gray-700 pt-4 mt-4">
+                        <button type="button" @click="isModalOpen = false" class="btn-secondary py-2 px-4 rounded">إلغاء</button>
+                        <button type="submit" class="btn-primary py-2 px-4 rounded">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Details Modal -->
+        <div v-if="isOrderModalOpen && selectedOrder" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div class="modal-content rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl sm:text-2xl font-bold">تفاصيل الطلب</h2>
+                    <button @click="closeOrderModal" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                <div class="mb-6 highlight-box p-4 rounded-lg">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">بيانات المستخدم</h3>
+                    <div v-if="selectedOrder.userDetails" class="space-y-1">
+                        <p><span class="text-gray-400">الاسم:</span> {{ selectedOrder.userDetails.displayName || 'لا يوجد' }}</p>
+                        <p><span class="text-gray-400">اسم المستخدم:</span> {{ selectedOrder.userDetails.username || 'لا يوجد' }}</p>
+                        <p><span class="text-gray-400">البريد الإلكتروني:</span> {{ selectedOrder.userDetails.email }}</p>
+                        <p class="mt-2 pt-2 border-t border-gray-700"><span class="text-gray-400">الرصيد الحالي:</span> <span class="font-bold text-yellow-400">{{ selectedOrder.userDetails.walletBalance.toFixed(2) }}$</span></p>
+                    </div>
+                    <div v-else>جاري تحميل بيانات المستخدم...</div>
+                </div>
+                <div class="space-y-3 text-base">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">بيانات الطلب</h3>
+                    <div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">ID اللاعب:</span><div class="flex items-center"><span class="font-mono text-cyan-300 ml-4">{{ selectedOrder.playerId }}</span><button @click="copyToClipboard(selectedOrder.playerId, 'ID اللاعب')" class="text-gray-400 hover:text-white text-sm">[نسخ]</button></div></div>
+                    <div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">الخدمة:</span><span>{{ selectedOrder.serviceName }}</span></div>
+                    <div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">الباقة/المبلغ:</span><span>{{ selectedOrder.packageName || `${selectedOrder.amountUSD}$` }}</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fund Request Details Modal -->
+        <div v-if="isFundRequestModalOpen && selectedFundRequest" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div class="modal-content rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl sm:text-2xl font-bold">تفاصيل طلب شحن الرصيد</h2>
+                    <button @click="closeFundRequestModal" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                <div class="mb-6 highlight-box p-4 rounded-lg">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">بيانات المستخدم</h3>
+                    <div v-if="selectedFundRequest.userDetails" class="space-y-1">
+                        <p><span class="text-gray-400">الاسم:</span> {{ selectedFundRequest.userDetails.displayName || 'لا يوجد' }}</p>
+                        <p><span class="text-gray-400">اسم المستخدم:</span> {{ selectedFundRequest.userDetails.username || 'لا يوجد' }}</p>
+                        <p><span class="text-gray-400">البريد الإلكتروني:</span> {{ selectedFundRequest.userDetails.email }}</p>
+                        <p class="mt-2 pt-2 border-t border-gray-700"><span class="text-gray-400">الرصيد الحالي:</span> <span class="font-bold text-yellow-400">{{ selectedFundRequest.userDetails.walletBalance.toFixed(2) }}$</span></p>
+                    </div>
+                    <div v-else>جاري تحميل بيانات المستخدم...</div>
+                </div>
+                <div class="space-y-3 text-base">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">بيانات الطلب</h3>
+                    <div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">المبلغ المطلوب شحنه:</span><span class="font-bold text-xl">{{ selectedFundRequest.amount }}$</span></div>
+                    <div class="pt-4 text-center">
+                        <span class="text-gray-400 block mb-2">صورة الإيصال:</span>
+                        <div v-if="selectedFundRequest.receiptBase64" class="bg-gray-700 p-2 rounded-lg max-w-xs mx-auto">
+                            <img :src="selectedFundRequest.receiptBase64" alt="إيصال التحويل" class="max-w-full h-auto rounded-md mx-auto border border-gray-600">
+                            <div class="flex justify-center space-x-2 rtl:space-x-reverse mt-3">
+                                <a :href="selectedFundRequest.receiptBase64" :download="`receipt_${selectedFundRequest.id}.png`" class="flex-1 btn-primary py-2 px-3 rounded text-sm">تحميل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Edit Modal -->
+        <div v-if="isUserEditModalOpen" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div class="modal-content rounded-lg p-6 w-full max-w-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">تعديل بيانات المستخدم</h2>
+                <form @submit.prevent="handleUserUpdate">
+                    <div class="mb-4"><label class="block mb-2">البريد الإلكتروني</label><p class="font-mono text-gray-400">{{ userEditForm.email }}</p></div>
+                    <div class="mb-4"><label class="block mb-2">الاسم (Display Name)</label><input v-model="userEditForm.displayName" type="text" class="form-input w-full p-3 rounded"></div>
+                    <div class="mb-4"><label class="block mb-2">اسم المستخدم (Username)</label><input v-model="userEditForm.username" type="text" class="form-input w-full p-3 rounded"></div>
+                    <div class="mb-4"><label class="block mb-2">رصيد المحفظة ($)</label><input v-model.number="userEditForm.walletBalance" type="number" step="0.01" class="form-input w-full p-3 rounded"></div>
+                    <div class="mt-6 pt-4 border-t border-gray-700">
+                        <button type="button" @click="sendPasswordReset(userEditForm.email)" class="w-full text-center btn-primary text-white font-bold py-3 rounded-lg mb-4">إرسال رابط إعادة تعيين كلمة المرور</button>
+                    </div>
+                    <div class="flex justify-end space-x-4 rtl:space-x-reverse mt-4">
+                        <button type="button" @click="isUserEditModalOpen = false" class="btn-secondary py-2 px-4 rounded">إلغاء</button>
+                        <button type="submit" class="btn-primary py-2 px-4 rounded">حفظ التغييرات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

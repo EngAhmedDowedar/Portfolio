@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شحن الرصيد | متجر الشحن</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-dark: #0891b2;
+            --dark: #0f172a;
+            --darker: #0a101f;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            min-height: 100vh;
+        }
+        
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 234, 212, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(8, 145, 178, 0.3);
+            border-color: rgba(94, 234, 212, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        
+        .file-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 2px dashed rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input:hover {
+            background: rgba(15, 23, 42, 0.7);
+            border-color: var(--primary);
+        }
+        
+        .file-input.dragover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .amount-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .payment-method {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            background: rgba(15, 23, 42, 0.7);
+            transform: translateY(-3px);
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .slide-fade-enter-active {
+            transition: all 0.3s ease-out;
+        }
+        
+        .slide-fade-leave-active {
+            transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+        }
+        
+        .slide-fade-enter-from,
+        .slide-fade-leave-to {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        /* إضافة جديدة لتحسين تجربة الأجهزة المحمولة */
+        @media (max-width: 768px) {
+            .file-input {
+                padding: 1rem;
+            }
+            
+            .payment-method {
+                padding: 1rem;
+            }
+            
+            .btn-primary {
+                padding: 0.8rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-cyan-500/10 border-b border-cyan-500/10">
+            <nav class="container mx-auto px-4 lg:px-6 py-4 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-cyan-400 flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
+                        <i class="fas fa-bolt text-cyan-400"></i>
+                    </div>
+                    متجر الشحن
+                </a>
+                <a href="profile.html" class="text-gray-300 hover:text-cyan-400 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للبروفايل
+                </a>
+            </nav>
+        </header>
+
+        <main class="container mx-auto px-4 py-10">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold mb-3">شحن رصيد المحفظة</h1>
+                    <p class="text-gray-400 max-w-xl mx-auto">أضف رصيداً إلى محفظتك بسهولة لتستمتع بتجربة تسوق سلسة وسريعة</p>
+                </div>
+                
+                <!-- Payment Instructions -->
+                <section class="card p-6 mb-8">
+                    <div class="flex items-start gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+                            <i class="fas fa-info-circle text-cyan-400 text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-cyan-400">تعليمات الدفع</h2>
+                    </div>
+                    
+                    <p class="text-gray-300 mb-6">لإضافة رصيد إلى محفظتك، يرجى تحويل المبلغ المطلوب إلى أحد الحسابات التالية:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="payment-method">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                    <i class="fas fa-mobile-alt text-cyan-400"></i>
+                                </div>
+                                <h3 class="font-bold text-lg">فودافون كاش</h3>
+                            </div>
+                            <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-lg">
+                                <span class="font-mono text-cyan-300">01012345678</span>
+                                <button @click="copyText('01012345678')" class="text-cyan-400 hover:text-cyan-300">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                    <i class="fas fa-university text-cyan-400"></i>
+                                </div>
+                                <h3 class="font-bold text-lg">حساب بنكي</h3>
+                            </div>
+                            <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-lg">
+                                <span class="font-mono text-cyan-300">SA03 8000 0000 6080 1016 7519</span>
+                                <button @click="copyText('SA03 8000 0000 6080 1016 7519')" class="text-cyan-400 hover:text-cyan-300">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-900/30 p-4 rounded-lg border border-yellow-700/50">
+                        <div class="flex gap-3">
+                            <i class="fas fa-exclamation-circle text-yellow-400 mt-1"></i>
+                            <div>
+                                <p class="text-yellow-400 font-bold mb-1">مهم</p>
+                                <p class="text-yellow-300 text-sm">بعد إتمام التحويل، يرجى ملء النموذج أدناه وإرفاق صورة من إيصال التحويل. سيتم إضافة الرصيد إلى حسابك خلال دقائق بعد التأكد من العملية.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fund Request Form -->
+                <section class="card p-6">
+                    <div class="flex items-start gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+                            <i class="fas fa-wallet text-cyan-400 text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">تقديم طلب شحن</h2>
+                    </div>
+                    
+                    <form @submit.prevent="submitFundRequest">
+                        <div class="mb-6">
+                            <label for="amount" class="block mb-3 font-medium">المبلغ الذي قمت بتحويله ($)</label>
+                            <div class="relative">
+                                <input v-model.number="requestForm.amount" 
+                                       type="number" 
+                                       min="1" 
+                                       id="amount" 
+                                       class="amount-input w-full"
+                                       placeholder="أدخل المبلغ بالدولار"
+                                       required>
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <label class="block mb-3 font-medium">إرفاق صورة إيصال التحويل</label>
+                            
+                            <!-- تم إصلاح مشكلة رفع الملفات هنا -->
+                            <div 
+                                @dragover.prevent="dragover = true" 
+                                @dragleave="dragover = false" 
+                                @drop.prevent="handleDrop"
+                                @click="$refs.fileInput.click()"
+                                :class="['file-input text-center cursor-pointer', dragover ? 'dragover' : '']"
+                            >
+                                <input 
+                                    type="file" 
+                                    ref="fileInput"
+                                    @change="handleFileSelect" 
+                                    accept="image/*" 
+                                    class="hidden"
+                                    required
+                                >
+                                
+                                <div v-if="!requestForm.receiptBase64">
+                                    <div class="mb-4">
+                                        <i class="fas fa-cloud-upload-alt text-3xl text-cyan-400"></i>
+                                    </div>
+                                    <p class="font-medium mb-2">اسحب وأسقط الصورة هنا</p>
+                                    <p class="text-gray-400 text-sm mb-4">أو انقر لاختيار صورة</p>
+                                    <p class="text-gray-500 text-xs">يسمح بملفات الصور فقط (JPG, PNG) - الحجم الأقصى 700KB</p>
+                                </div>
+                                
+                                <div v-else class="flex flex-col items-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-check-circle text-2xl text-green-400"></i>
+                                    </div>
+                                    <p class="font-medium text-cyan-400 mb-2">تم تحميل الصورة بنجاح</p>
+                                    <img :src="requestForm.receiptBase64" alt="صورة الإيصال" class="max-h-32 mb-3 rounded-lg">
+                                    <button 
+                                        type="button" 
+                                        @click.stop="requestForm.receiptBase64 = null" 
+                                        class="text-red-400 hover:text-red-300 text-sm flex items-center gap-1"
+                                    >
+                                        <i class="fas fa-times"></i> إزالة الصورة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            type="submit" 
+                            :disabled="isLoading" 
+                            class="btn-primary w-full py-4 text-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <span v-if="!isLoading">
+                                    <i class="fas fa-paper-plane mr-2"></i> إرسال طلب الشحن
+                                </span>
+                                <span v-else>
+                                    <i class="fas fa-spinner loading-spinner mr-2"></i> جاري إرسال الطلب...
+                                </span>
+                            </div>
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <div class="fixed bottom-6 left-6 z-50">
+            <div class="bg-cyan-500 rounded-full w-14 h-14 flex items-center justify-center shadow-lg shadow-cyan-500/30 pulse">
+                <i class="fas fa-headset text-white text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/add-funds-app.js"></script>
+</body>
+</html>

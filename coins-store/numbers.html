@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شراء الأرقام | متجر الشحن</title>
+    
+    <!-- إصدار إنتاج Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4',
+                        'primary-dark': '#0891b2',
+                        secondary: '#7e22ce',
+                        accent: '#ec4899'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- إصدار إنتاج Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    
+    <!-- SweetAlert2 للإشعارات -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- خط Cairo للغة العربية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-dark: #0891b2;
+            --secondary: #7e22ce;
+            --accent: #ec4899;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        } 
+        
+        .number-card { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(94, 234, 212, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .number-card:hover { 
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .number-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: 10;
+        }
+        
+        .number-card:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .number-card-img {
+            transition: transform 0.5s ease;
+        }
+        
+        .number-card:hover .number-card-img {
+            transform: scale(1.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            padding: 8px 0;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(6, 182, 212, 0.5);
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.6s;
+        }
+        
+        .btn-primary:hover::after {
+            left: 120%;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #6b21a8 100%);
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(126, 34, 206, 0.5);
+        }
+        
+        .btn-secondary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.6s;
+        }
+        
+        .btn-secondary:hover::after {
+            left: 120%;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            color: var(--primary);
+        }
+        
+        .checked-package { 
+            border-color: #22d3ee !important; 
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.5); 
+            transform: scale(1.02); 
+            background: rgba(6, 182, 212, 0.1);
+        }
+        
+        .search-input {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+        
+        .filter-btn {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .number-tag {
+            background: rgba(126, 34, 206, 0.2);
+            color: #d8b4fe;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #2d3748 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            border-radius: 8px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(94, 234, 212, 0.3);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        }
+        
+        .price-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, var(--accent) 0%, #db2777 100%);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-gray-900/90 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-cyan-500/10 transition-all duration-300" :class="{'py-2': scrolled}">
+            <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-cyan-400 flex items-center">
+                    <span class="mr-2 floating">⚡</span>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">متجر الشحن</span>
+                </a>
+                
+                <div class="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
+                    <a href="index.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">الرئيسية</a>
+                    <a href="games.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">الألعاب</a>
+                    <a href="apps.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">التطبيقات</a>
+                    <a href="numbers.html" class="nav-link text-cyan-400 after:w-full transition">الأرقام</a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+                    <a v-if="!user" href="login.html" class="text-gray-300 hover:text-cyan-400">دخول</a>
+                    <a v-if="!user" href="register.html" class="btn-primary text-white font-bold py-2 px-6 rounded-full">حساب جديد</a>
+                    <a v-if="user" href="profile.html" class="text-gray-300 hover:text-cyan-400 font-semibold flex items-center">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-4 rounded-lg text-sm flex items-center transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i> خروج
+                    </button>
+                </div>
+                
+                <div class="md:hidden">
+                    <button class="text-white focus:outline-none text-2xl" @click="mobileMenuOpen = !mobileMenuOpen">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Mobile Menu -->
+            <div class="md:hidden bg-gray-800/95 backdrop-blur-lg transition-all duration-300 ease-in-out overflow-hidden"
+                 :class="mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'">
+                <a href="index.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-home mr-3"></i> الرئيسية
+                </a>
+                <a href="games.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-gamepad mr-3"></i> الألعاب
+                </a>
+                <a href="apps.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-mobile-alt mr-3"></i> التطبيقات
+                </a>
+                <a href="numbers.html" class="block py-4 px-6 text-base text-cyan-400 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-sim-card mr-3"></i> الأرقام
+                </a>
+                
+                <hr class="border-gray-700">
+                <div class="p-4 flex flex-col space-y-3">
+                    <a v-if="!user" href="login.html" class="btn-primary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i> تسجيل الدخول
+                    </a>
+                    <a v-if="!user" href="register.html" class="btn-secondary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-plus mr-2"></i> حساب جديد
+                    </a>
+                    <a v-if="user" href="profile.html" class="btn-primary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-full flex items-center justify-center transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i> تسجيل خروج
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 md:px-6 py-8">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-r from-green-900/30 to-cyan-900/30 rounded-2xl p-6 md:p-8 mb-10 border border-green-500/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-grid-green-500/10 z-0"></div>
+                <div class="relative z-10">
+                    <h1 class="text-3xl md:text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-cyan-400">
+                        شراء الأرقام
+                    </h1>
+                    <p class="text-center text-gray-300 max-w-2xl mx-auto mb-8">
+                        احصل على أرقام هواتف مميزة لتطبيقات التواصل والخدمات الرقمية بأسعار تنافسية
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Categories Filter -->
+            
+            
+            <!-- Featured Numbers -->
+            <div class="mb-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-300">الأرقام المميزة</h2>
+                    <div class="flex space-x-2">
+                        <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition" @click="prevFeatured">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition" @click="nextFeatured">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div v-for="num in featuredNumbers" :key="num.id" 
+                         class="highlight-card rounded-xl overflow-hidden relative fade-in">
+                        <div class="price-badge pulse">مميز</div>
+                        <img :src="num.logo" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-xl mb-2">{{ num.name }}</h3>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="number-tag">{{ num.country }}</span>
+                                <span class="number-tag">أرقام مميزة</span>
+                            </div>
+                            <button @click="openPurchaseModal(num)" 
+                                    class="btn-primary w-full py-3 rounded-lg mt-2">
+                                شراء رقم
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- All Numbers -->
+            <div class="mb-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-300">جميع الأرقام المتاحة</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-gray-400 text-sm">الترتيب:</span>
+                        <select v-model="sortBy" class="bg-gray-800 border border-gray-700 rounded px-3 py-1 text-sm">
+                            <option value="name">حسب الاسم</option>
+                            <option value="popular">الأكثر شعبية</option>
+                            <option value="price">السعر (من الأقل)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div v-if="isLoading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <div v-for="i in 10" :key="i" class="number-card rounded-lg overflow-hidden">
+                        <div class="skeleton h-40 w-full"></div>
+                        <div class="p-4">
+                            <div class="skeleton h-6 w-3/4 mb-2 mx-auto"></div>
+                            <div class="skeleton h-4 w-1/2 mx-auto"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div v-else-if="filteredNumbers.length === 0" class="text-center py-16 bg-gray-800/50 rounded-xl">
+                    <i class="fas fa-sim-card text-4xl text-gray-600 mb-4"></i>
+                    <h3 class="text-xl text-gray-500">لا توجد أرقام مطابقة لبحثك</h3>
+                    <button @click="resetFilters" class="mt-4 text-green-400 hover:text-green-300 transition">
+                        إعادة تعيين الفلاتر
+                    </button>
+                </div>
+                
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <div v-for="num in filteredNumbers" :key="num.id" @click="openPurchaseModal(num)"
+                         class="number-card cursor-pointer rounded-lg overflow-hidden">
+                        <div class="overflow-hidden">
+                            <img :src="num.logo" class="w-full h-40 object-cover number-card-img">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-bold text-lg text-white mb-1">{{ num.name }}</h3>
+                            <p class="text-sm text-green-300">{{ num.country }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Purchase Modal -->
+        <div v-if="isModalOpen && selectedNumber" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div class="bg-gray-800 rounded-xl p-6 w-full max-w-lg border border-green-500/30 relative">
+                <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 to-cyan-500 rounded-t-xl"></div>
+                
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <img :src="selectedNumber.logo" class="w-12 h-12 rounded-lg mr-3">
+                        <h2 class="text-2xl font-bold">شراء: {{ selectedNumber.name }}</h2>
+                    </div>
+                    <button @click="isModalOpen = false" class="text-gray-400 hover:text-white text-2xl transition">&times;</button>
+                </div>
+                
+                <div class="text-center bg-gray-900/50 p-3 rounded-lg mb-4 border border-green-500/20">
+                    رصيدك الحالي: <span class="font-bold text-cyan-400">{{ user ? user.walletBalance.toFixed(2) : '0.00' }} $</span>
+                </div>
+                
+                <form @submit.prevent="submitPurchase">
+                    <div class="mb-4">
+                        <label class="block mb-2 text-green-300">اسم التطبيق المطلوب للتفعيل</label>
+                        <input v-model="purchaseForm.appName" type="text" 
+                               class="w-full bg-gray-700 p-3 rounded-lg border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 transition" 
+                               placeholder="مثال: WhatsApp, Telegram" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block mb-2 text-green-300">اختر نوع الرقم:</label>
+                        <div class="grid grid-cols-1 gap-4">
+                            <label v-for="pkg in selectedNumber.packages" :key="pkg.id" 
+                                   class="block p-4 bg-gray-700 rounded-lg cursor-pointer border-2 border-gray-700 transition-all"
+                                   :class="{ 'checked-package': purchaseForm.selectedPackage && purchaseForm.selectedPackage.id === pkg.id }">
+                                <input type="radio" :value="pkg" v-model="purchaseForm.selectedPackage" class="hidden">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-bold text-lg">{{ pkg.name }}</p>
+                                        <p class="text-sm text-gray-400">{{ pkg.description }}</p>
+                                    </div>
+                                    <p class="text-cyan-400 font-semibold text-xl">{{ pkg.price }} $</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4 bg-gray-900/50 p-4 rounded-lg border border-green-500/20">
+                        <p class="text-gray-400 mb-2">بعد الشراء:</p>
+                        <ul class="list-disc pl-6 text-gray-300 text-sm">
+                            <li>سيتم إرسال الرقم وكلمة المرور إلى بريدك الإلكتروني</li>
+                            <li>يمكنك استخدام الرقم لمدة 7 أيام قبل التأكيد النهائي</li>
+                            <li>سيتم خصم المبلغ بعد موافقة الإدارة</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button type="button" @click="isModalOpen = false" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition">
+                            إلغاء
+                        </button>
+                        <button type="submit" class="flex-1 btn-primary text-white font-bold py-3 rounded-lg transition" :disabled="isProcessing">
+                            <span v-if="!isProcessing">شراء الرقم</span>
+                            <span v-else><span class="loading-spinner mr-2"></span> جاري المعالجة</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900/80 backdrop-blur border-t border-gray-800 mt-16">
+            <div class="container mx-auto px-6 py-10">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">متجر الشحن</h3>
+                        <p class="text-gray-400 mb-4">
+                            نوفر خدمة شحن فوري للعملات والجواهر في أشهر الألعاب الإلكترونية بأسعار تنافسية وخصومات حصرية.
+                        </p>
+                        <div class="flex space-x-4">
+                            <a href="#" class="social-icon text-gray-400 hover:text-cyan-400 text-xl">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" class="social-icon text-gray-400 hover:text-cyan-400 text-xl">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon text-gray-400 hover:text-cyan-400 text-xl">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon text-gray-400 hover:text-cyan-400 text-xl">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">روابط سريعة</h4>
+                        <ul class="space-y-2">
+                            <li><a href="index.html" class="text-gray-400 hover:text-cyan-400 transition">الرئيسية</a></li>
+                            <li><a href="games.html" class="text-gray-400 hover:text-cyan-400 transition">الألعاب</a></li>
+                            <li><a href="apps.html" class="text-gray-400 hover:text-cyan-400 transition">التطبيقات</a></li>
+                            <li><a href="numbers.html" class="text-gray-400 hover:text-cyan-400 transition">الأرقام</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">الدعم</h4>
+                        <ul class="space-y-2">
+                            <li><a href="faq.html" class="text-gray-400 hover:text-cyan-400 transition">الأسئلة الشائعة</a></li>
+                            <li><a href="contact.html" class="text-gray-400 hover:text-cyan-400 transition">اتصل بنا</a></li>
+                            <li><a href="policy.html" class="text-gray-400 hover:text-cyan-400 transition">سياسة الخصوصية</a></li>
+                            <li><a href="terms.html" class="text-gray-400 hover:text-cyan-400 transition">الشروط والأحكام</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold mb-4">اشترك في النشرة البريدية</h4>
+                        <p class="text-gray-400 mb-4">كن أول من يعرف عن العروض والخصومات الجديدة</p>
+                        <div class="flex">
+                            <input type="email" placeholder="بريدك الإلكتروني" class="flex-grow bg-gray-800 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500">
+                            <button class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 rounded-r-lg transition">
+                                اشتراك
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500">
+                    <p>© 2023 متجر الشحن. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="js/numbers-app.js"></script>
+</body>
+</html>

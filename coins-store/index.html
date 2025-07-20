@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر شحن | اشحن ألعابك وتطبيقاتك المفضلة</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-dark: #0891b2;
+            --secondary: #7e22ce;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-attachment: fixed;
+        } 
+        
+        .category-card { 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transform-origin: center bottom;
+        }
+        
+        .category-card:hover { 
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .slider-track { transition: transform 0.5s ease-in-out; }
+        
+        .nav-link {
+            position: relative;
+            padding: 8px 0;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(6, 182, 212, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #6b21a8 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(126, 34, 206, 0.4);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+            color: var(--primary);
+        }
+        
+        .banner-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .banner-indicator.active {
+            width: 30px;
+            border-radius: 5px;
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div id="app">
+        <!-- Header with Full Navigation -->
+        <header class="bg-gray-900/90 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-cyan-500/5 transition-all duration-300" :class="{'py-2': scrolled}">
+            <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-cyan-400 flex items-center">
+                    <span class="mr-2 floating">⚡</span>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">متجر الشحن</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
+                    <a href="index.html" class="nav-link text-cyan-400 after:w-full transition">الرئيسية</a>
+                    <a href="games.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">الألعاب</a>
+                    <a href="apps.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">التطبيقات</a>
+                    <a href="numbers.html" class="nav-link text-gray-300 hover:text-cyan-400 transition">الأرقام</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+                    <a v-if="!user" href="login.html" class="text-gray-300 hover:text-cyan-400">دخول</a>
+                    <a v-if="!user" href="register.html" class="btn-primary text-white font-bold py-2 px-6 rounded-full">حساب جديد</a>
+                    <a v-if="user" href="profile.html" class="text-gray-300 hover:text-cyan-400 font-semibold flex items-center">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-4 rounded-lg text-sm flex items-center">
+                        <i class="fas fa-sign-out-alt mr-1"></i> خروج
+                    </button>
+                </div>
+                <div class="md:hidden">
+                    <button id="burger-button" class="text-white focus:outline-none text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+            <div id="mobile-menu" class="hidden md:hidden bg-gray-800/95 backdrop-blur-lg">
+                <a href="index.html" class="block py-4 px-6 text-base text-cyan-400 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-home mr-3"></i> الرئيسية
+                </a>
+                <a href="games.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-gamepad mr-3"></i> الألعاب
+                </a>
+                <a href="apps.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-mobile-alt mr-3"></i> التطبيقات
+                </a>
+                <a href="numbers.html" class="block py-4 px-6 text-base text-gray-200 hover:bg-gray-700/50 flex items-center">
+                    <i class="fas fa-sim-card mr-3"></i> الأرقام
+                </a>
+                <hr class="border-gray-700">
+                <div class="p-4 flex flex-col space-y-3">
+                    <a v-if="!user" href="login.html" class="btn-primary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i> تسجيل الدخول
+                    </a>
+                    <a v-if="!user" href="register.html" class="btn-secondary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-plus mr-2"></i> حساب جديد
+                    </a>
+                    <a v-if="user" href="profile.html" class="btn-primary text-center text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-circle mr-2"></i> حسابي
+                    </a>
+                    <button v-if="user" @click="logout" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i> تسجيل خروج
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Hero Banner -->
+            <section class="pt-6 pb-12 md:pt-12 md:pb-16">
+                <div class="container mx-auto px-4 md:px-6 text-center">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
+                        شحن سريع وآمن لألعابك وتطبيقاتك
+                    </h1>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+                        نوفر لك خدمة شحن فورية لجميع الألعاب والتطبيقات بأفضل الأسعار وضمان الاستلام الفوري
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="games.html" class="btn-primary px-8 py-3 text-lg rounded-full">
+                            شحن الألعاب <i class="fas fa-arrow-left ml-2"></i>
+                        </a>
+                        <a href="apps.html" class="bg-gray-800 hover:bg-gray-700 px-8 py-3 text-lg rounded-full border border-gray-700">
+                            شحن التطبيقات <i class="fas fa-arrow-left ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Banner Slider -->
+            <section class="container mx-auto px-4 md:px-6 pt-4 pb-12 relative overflow-hidden rounded-xl" v-if="banners.length > 0">
+                <div class="relative overflow-hidden rounded-xl">
+                    <div class="slider-track flex" :style="{ transform: `translateX(${currentBannerIndex * 100}%)` }">
+                        <div v-for="(banner, index) in banners" :key="index" class="w-full flex-shrink-0">
+                            <a :href="banner.linkUrl" target="_blank" class="block relative">
+                                <div class="w-full aspect-video md:aspect-[21/9] bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl flex items-center">
+                                    <img :src="banner.imageUrl" :alt="banner.title" class="absolute inset-0 w-full h-full object-cover rounded-xl mix-blend-overlay">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/30 rounded-xl"></div>
+                                    <div class="relative z-10 p-6 md:p-12 text-left w-full">
+                                        <h2 class="text-2xl md:text-4xl font-bold text-white mb-3">{{ banner.title }}</h2>
+                                        <p class="text-base md:text-xl text-gray-300 max-w-lg">{{ banner.subtitle }}</p>
+                                        <button class="mt-6 bg-white text-gray-900 font-bold py-2 px-6 rounded-full flex items-center">
+                                            ابدأ الآن <i class="fas fa-arrow-left ml-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <button @click="prevBanner" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-black/80 z-10">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button @click="nextBanner" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-black/80 z-10">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <!-- Banner Indicators -->
+                <div class="flex justify-center mt-4 space-x-2 rtl:space-x-reverse">
+                    <div v-for="(banner, index) in banners" :key="index" 
+                         @click="currentBannerIndex = index"
+                         class="banner-indicator cursor-pointer"
+                         :class="{'active': currentBannerIndex === index}"></div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="py-12 md:py-16 bg-gradient-to-b from-gray-900/30 to-gray-900">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">لماذا تختار متجر الشحن؟</h2>
+                    <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">نقدم لك أفضل تجربة شحن مع ضمان السرعة والأمان والموثوقية</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="feature-card slide-in delay-1 p-6 rounded-xl">
+                            <div class="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mb-6">
+                                <i class="fas fa-bolt text-3xl text-cyan-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">شحن فوري</h3>
+                            <p class="text-gray-400">استلم شحنتك خلال ثوانٍ معدودة بعد تأكيد الدفع، بدون أي تأخير</p>
+                        </div>
+                        
+                        <div class="feature-card slide-in delay-2 p-6 rounded-xl">
+                            <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-6">
+                                <i class="fas fa-shield-alt text-3xl text-purple-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">أمان تام</h3>
+                            <p class="text-gray-400">معاملات آمنة وبيانات محمية بأحدث تقنيات التشفير</p>
+                        </div>
+                        
+                        <div class="feature-card slide-in delay-3 p-6 rounded-xl">
+                            <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
+                                <i class="fas fa-headset text-3xl text-green-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">دعم فني 24/7</h3>
+                            <p class="text-gray-400">فريق دعم فني متاح على مدار الساعة لحل أي مشكلة تواجهك</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section id="categories" class="py-16">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">اختر القسم الذي يناسبك</h2>
+                    <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">استمتع بتجربة شحن سلسة وممتعة لجميع احتياجاتك</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <a href="games.html" class="category-card block bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border border-gray-700 hover:border-cyan-500">
+                            <div class="h-64 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+                                <img src="img/games.webp" alt="شحن الألعاب" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                                <div class="absolute top-4 left-4 bg-cyan-500 text-white py-1 px-3 rounded-full text-sm font-bold z-10">
+                                    الأكثر طلباً
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl md:text-2xl font-bold text-white flex items-center">
+                                    <i class="fas fa-gamepad mr-3 text-cyan-400"></i> شحن الألعاب
+                                </h3>
+                                <p class="text-gray-400 mt-3">اشحن ألعابك المفضلة واحصل على الجواهر والكوينز فورًا بأفضل الأسعار</p>
+                                <div class="mt-4 flex items-center text-cyan-400 font-medium">
+                                    ابدأ الشحن الآن <i class="fas fa-arrow-left ml-2"></i>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="apps.html" class="category-card block bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border border-gray-700 hover:border-cyan-500">
+                            <div class="h-64 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+                                <img src="img/apps.webp" alt="شحن التطبيقات" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl md:text-2xl font-bold text-white flex items-center">
+                                    <i class="fas fa-mobile-alt mr-3 text-purple-400"></i> شحن التطبيقات
+                                </h3>
+                                <p class="text-gray-400 mt-3">اشحن اشتراكاتك وتطبيقاتك الاجتماعية بكل سهولة وأمان وبسرعة قياسية</p>
+                                <div class="mt-4 flex items-center text-purple-400 font-medium">
+                                    ابدأ الشحن الآن <i class="fas fa-arrow-left ml-2"></i>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="numbers.html" class="category-card block bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border border-gray-700 hover:border-cyan-500">
+                            <div class="h-64 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+                                <img src="img/numbers.webp" alt="شراء الأرقام" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl font-bold text-white flex items-center">
+                                    <i class="fas fa-sim-card mr-3 text-green-400"></i> شراء الأرقام
+                                </h3>
+                                <p class="text-gray-400 mt-3">أرقام لتفعيل واتساب وتليجرام وتطبيقات التواصل بجودة عالية وضمان التشغيل</p>
+                                <div class="mt-4 flex items-center text-green-400 font-medium">
+                                    ابدأ الشحن الآن <i class="fas fa-arrow-left ml-2"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Testimonials Section -->
+            <section class="py-16 bg-gradient-to-b from-gray-900 to-gray-900/50">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">آراء عملائنا</h2>
+                    <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">انضم إلى آلاف المستخدمين الراضين عن خدماتنا</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-xl">م</div>
+                                <div class="mr-3">
+                                    <h4 class="font-bold">محمد أحمد</h4>
+                                    <div class="flex text-amber-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">أسرع شحن لعبة جربته في حياتي! استلمت الجواهر خلال دقيقة بعد الدفع. شكرًا لكم على الخدمة الممتازة.</p>
+                        </div>
+                        
+                        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-xl">س</div>
+                                <div class="mr-3">
+                                    <h4 class="font-bold">سارة خالد</h4>
+                                    <div class="flex text-amber-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">اشتريت اشتراك يوتيوب بريميوم ووصلني في الحال، الدعم الفني كان سريعًا ومحترفًا. أنصح بهذا المتجر بشدة!</p>
+                        </div>
+                        
+                        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xl">ي</div>
+                                <div class="mr-3">
+                                    <h4 class="font-bold">يوسف عبدالله</h4>
+                                    <div class="flex text-amber-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300">اشتريت رقم لتليجرام وعمل بشكل ممتاز، السعر معقول والخدمة سريعة. متجر جدير بالثقة.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Modern Footer -->
+        <footer class="bg-gray-800/80 backdrop-blur-lg text-gray-400 pt-16 pb-8">
+            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                        <span class="mr-2 floating">⚡</span>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">متجر الشحن</span>
+                    </h3>
+                    <p class="text-sm mb-4">منصتك الأولى لشحن جميع الألعاب والتطبيقات بأفضل الأسعار وبشكل آمن وفوري.</p>
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <a href="#" class="social-icon text-gray-400 hover:text-cyan-400 text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon text-gray-400 hover:text-purple-400 text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon text-gray-400 hover:text-blue-400 text-xl"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon text-gray-400 hover:text-red-500 text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">روابط سريعة</h3>
+                    <ul class="space-y-3">
+                        <li><a href="games.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> شحن الألعاب</a></li>
+                        <li><a href="apps.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> شحن التطبيقات</a></li>
+                        <li><a href="numbers.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> الأرقام</a></li>
+                        <li><a href="profile.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> حسابي</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">المساعدة</h3>
+                    <ul class="space-y-3">
+                        <li><a href="faq.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> الأسئلة الشائعة</a></li>
+                        <li><a href="terms.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> الشروط والأحكام</a></li>
+                        <li><a href="privacy.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> سياسة الخصوصية</a></li>
+                        <li><a href="contact.html" class="hover:text-cyan-400 flex items-center"><i class="fas fa-chevron-left ml-2 text-xs"></i> اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">تواصل معنا</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3 text-cyan-400"></i>
+                            <a href="mailto:support@example.com" class="hover:text-cyan-400">support@example.com</a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fab fa-whatsapp mt-1 mr-3 text-green-400"></i>
+                            <span>+966 50 123 4567</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-headset mt-1 mr-3 text-purple-400"></i>
+                            <span>الدعم متاح 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-16 border-t border-gray-700 pt-6 text-center">
+                <p class="text-sm">&copy; 2025 متجر الشحن. كل الحقوق محفوظة. تطوير Dowedar.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main-app.js" type="module"></script>
+</body>
+</html>
