@@ -15,13 +15,13 @@ const { createApp } = Vue;
                     {
                         title: 'شحن أسرع من البرق',
                         subtitle: 'خدمة فورية وآمنة لجميع تطبيقاتك وألعابك المفضلة.',
-                        imageUrl: '../img/banner-2.webp',
+                        imageUrl: 'img/banner-2.webp',
                         linkUrl: '#'
                     },
                     {
                         title: 'كل ألعابك في مكان واحد',
                         subtitle: 'نوفر لك شحن آمن لكل ألعابك المفضلة بأفضل الأسعار.',
-                        imageUrl: '../img/banner-3.webp',
+                        imageUrl: 'img/banner-3.webp',
                         linkUrl: '#'
                     }
                 ],
