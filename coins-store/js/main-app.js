@@ -9,7 +9,7 @@ const { createApp } = Vue;
                     {
                         title: 'عروض الصيف المميزة',
                         subtitle: 'احصل على خصم 20% على جميع عمليات الشحن لفترة محدودة!',
-                        imageUrl: '../img/banner-1.webp',
+                        imageUrl: './img/banner-1.webp',
                         linkUrl: '#'
                     },
                     {
