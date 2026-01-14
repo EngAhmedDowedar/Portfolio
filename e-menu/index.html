@@ -3,309 +3,1321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Damascus Grill | طعم الفخامة السورية</title>
+    <meta name="description" content="دمشق جريل - أفضل مطعم مشويات وشاورما في دمياط الجديدة">
+    <meta name="keywords" content="مشويات, شاورما, دمياط, دمشق جريل, طعام سوري">
+    <title>Damascus Grill | تجربة طعام استثنائية</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #111827; }
-        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 4px; }
-        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, #f59e0b, #d97706); 
+            border-radius: 10px; 
+            border: 2px solid #0f172a;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+        
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 
-        /* Glassmorphism */
-        .glass {
-            background: rgba(17, 24, 39, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* Premium Glassmorphism */
+        .glass-premium {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
         }
 
-        .hero-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-animation 3s linear infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float-animation { animation: float 6s ease-in-out infinite; }
+
+        /* Premium Card Hover */
+        .premium-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
+        }
+
+        .premium-card:hover::before { transform: scale(1); }
+        .premium-card:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.3);
+        }
+
+        /* Hero Pattern Enhanced */
+        .hero-pattern-enhanced {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(251, 191, 36, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(217, 119, 6, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(251, 191, 36, 0.05) 0px, transparent 50%);
+        }
+
+        /* Glowing Button */
+        .glow-button {
+            position: relative;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.8), 0 0 60px rgba(251, 191, 36, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Parallax Effect */
+        .parallax-layer {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        /* Loading Animation */
+        .pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* Category Badge */
+        .category-badge {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .category-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Price Tag */
+        .price-tag {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.9), rgba(217, 119, 6, 0.9));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Shimmer Effect */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        /* Counter Animation */
+        .counter { font-variant-numeric: tabular-nums; }
+
+        /* Mobile Menu Slide */
+        .mobile-menu-slide {
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Cart Panel Slide */
+        .cart-slide {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Image Zoom Effect */
+        .zoom-image {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .zoom-image:hover { transform: scale(1.15) rotate(2deg); }
+
+        /* Stats Animation */
+        @keyframes count-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-item { animation: count-up 0.6s ease-out forwards; }
+
+        /* Testimonial Card */
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Social Icons Hover */
+        .social-icon {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) rotate(5deg);
+        }
+
+        /* Image loaded state */
+        img {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        img.loaded {
+            opacity: 1;
         }
     </style>
 </head>
 
-<body class="bg-gray-900 text-gray-100 overflow-x-hidden">
+<body class="text-gray-100">
 
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 border-b border-transparent">
+    <!-- ============ NAVIGATION ============ -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             
-            <div class="flex items-center gap-2 z-50">
-                <div class="bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
-                    <i class="fa-solid fa-fire text-amber-500 text-2xl"></i>
+            <!-- Logo -->
+            <div class="flex items-center gap-3 z-50 group cursor-pointer">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-amber-500/30 blur-xl group-hover:bg-amber-500/50 transition duration-300"></div>
+                    <div class="relative bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-2xl border border-amber-400/30 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition duration-300">
+                        <i class="fa-solid fa-fire text-white text-2xl"></i>
+                    </div>
                 </div>
-                <h1 class="text-xl md:text-2xl font-black text-white tracking-wide">دمشق <span class="text-amber-500">جريل</span></h1>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight leading-none">
+                        دمشق <span class="gradient-text">جريل</span>
+                    </h1>
+                    <p class="text-[10px] text-gray-400 font-light tracking-wider">أصالة الطعم السوري</p>
+                </div>
             </div>
             
-            <div class="hidden md:flex gap-8 font-bold text-gray-300 items-center bg-gray-800/50 px-8 py-2 rounded-full border border-gray-700/50 backdrop-blur-sm">
-                <a href="#menu" class="hover:text-amber-500 transition duration-300 text-sm">المنيو</a>
-                <a href="#about" class="hover:text-amber-500 transition duration-300 text-sm">قصتنا</a>
-                <a href="#contact" class="hover:text-amber-500 transition duration-300 text-sm">تواصل معنا</a>
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-2 items-center glass-premium px-6 py-3 rounded-full">
+                <a href="#menu" class="px-4 py-2 text-sm font-bold text-gray-300 hover:text-amber-500 hover:bg-amber-500/10 rounded-full transition duration-300">
+                    <i class="fa-solid fa-utensils ml-2"></i>المنيو
+                </a>
+                <a href="#about" class="px-4 py-2 text-sm font-bold text-gray-300 hover:text-amber-500 hover:bg-amber-500/10 rounded-full transition duration-300">
+                    <i class="fa-solid fa-star ml-2"></i>قصتنا
+                </a>
+                <a href="#reviews" class="px-4 py-2 text-sm font-bold text-gray-300 hover:text-amber-500 hover:bg-amber-500/10 rounded-full transition duration-300">
+                    <i class="fa-solid fa-comments ml-2"></i>التقييمات
+                </a>
+                <a href="#contact" class="px-4 py-2 text-sm font-bold text-gray-300 hover:text-amber-500 hover:bg-amber-500/10 rounded-full transition duration-300">
+                    <i class="fa-solid fa-location-dot ml-2"></i>تواصل معنا
+                </a>
             </div>
 
-            <div class="flex items-center gap-4 z-50">
-                <button onclick="toggleCart()" class="relative group p-2">
-                    <div class="text-gray-300 hover:text-amber-500 transition transform group-hover:scale-110 duration-300">
-                        <i class="fa-solid fa-cart-shopping text-2xl"></i>
+            <!-- Actions -->
+            <div class="flex items-center gap-3 z-50">
+                <!-- Cart Button -->
+                <button onclick="toggleCart()" class="relative group">
+                    <div class="glass-premium p-3 rounded-full text-gray-300 hover:text-amber-500 transition transform group-hover:scale-110 duration-300 border border-gray-700/50">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
                     </div>
-                    <span id="cart-badge" class="absolute top-0 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center transform scale-0 transition-transform duration-200 border-2 border-gray-900">0</span>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold min-w-6 h-6 rounded-full flex items-center justify-center transform scale-0 transition-all duration-300 border-2 border-slate-900 shadow-lg">0</span>
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-900 animate-pulse"></div>
                 </button>
 
-                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-amber-500 transition p-2 focus:outline-none">
-                    <i id="burger-icon" class="fa-solid fa-bars-staggered text-2xl"></i>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden glass-premium p-3 rounded-full text-gray-300 hover:text-amber-500 transition focus:outline-none">
+                    <i id="burger-icon" class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="absolute top-full left-0 w-full bg-gray-900 border-b border-gray-800 shadow-2xl overflow-hidden transition-all duration-300 max-h-0 md:hidden glass">
-            <div class="flex flex-col p-6 gap-4 text-center font-bold text-gray-300">
-                <a href="#menu" onclick="toggleMobileMenu()" class="py-3 hover:text-amber-500 hover:bg-gray-800/50 rounded-xl transition">المنيو</a>
-                <a href="#about" onclick="toggleMobileMenu()" class="py-3 hover:text-amber-500 hover:bg-gray-800/50 rounded-xl transition">قصتنا</a>
-                <a href="#contact" onclick="toggleMobileMenu()" class="py-3 hover:text-amber-500 hover:bg-gray-800/50 rounded-xl transition">تواصل معنا</a>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden absolute top-full left-0 w-full glass-premium shadow-2xl overflow-hidden mobile-menu-slide max-h-0 border-t border-gray-700/50">
+            <div class="flex flex-col p-6 gap-3">
+                <a href="#menu" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 px-4 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition font-bold">
+                    <i class="fa-solid fa-utensils"></i>المنيو
+                </a>
+                <a href="#about" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 px-4 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition font-bold">
+                    <i class="fa-solid fa-star"></i>قصتنا
+                </a>
+                <a href="#reviews" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 px-4 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition font-bold">
+                    <i class="fa-solid fa-comments"></i>التقييمات
+                </a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="flex items-center gap-3 py-3 px-4 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition font-bold">
+                    <i class="fa-solid fa-location-dot"></i>تواصل معنا
+                </a>
             </div>
         </div>
     </nav>
 
-    <section class="relative h-screen flex items-center justify-center hero-pattern pt-20">
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent z-10"></div>
-        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" class="absolute inset-0 w-full h-full object-cover opacity-50">
-        <div class="relative z-20 text-center px-4" data-aos="zoom-in" data-aos-duration="1000">
-            <span class="inline-block py-1 px-3 rounded-full bg-amber-500/20 text-amber-500 text-sm font-bold tracking-wider mb-6 border border-amber-500/30">✨ أصل الطعم السوري</span>
-            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">مشويات تأسر <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">حواسك</span></h1>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#menu" class="bg-amber-500 hover:bg-amber-400 text-black font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-amber-500/40 transition transform duration-300 hover:-translate-y-1">اطلب الآن</a>
-                <a href="#menu" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-10 rounded-full border border-gray-700 transition duration-300">تصفح المنيو</a>
+    <!-- ============ HERO SECTION ============ -->
+    <section class="relative min-h-screen flex items-center justify-center hero-pattern-enhanced pt-20 overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+        </div>
+
+        <!-- Main Image -->
+        <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
+                 class="parallax-hero w-full h-full object-cover opacity-20 scale-110"
+                 alt="Damascus Grill Background">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-20 text-center px-4 max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="1000">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 py-2 px-6 rounded-full glass-premium mb-8 border border-amber-500/30" data-aos="zoom-in" data-aos-delay="200">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                </span>
+                <span class="text-amber-500 text-sm font-bold tracking-wider">متاح الآن • توصيل سريع</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight" data-aos="fade-up" data-aos-delay="300">
+                مشويات تأسر<br>
+                <span class="gradient-text">حواسك</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed font-light" data-aos="fade-up" data-aos-delay="400">
+                تجربة طعام استثنائية تجمع بين الأصالة السورية والجودة العالمية
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-aos="fade-up" data-aos-delay="500">
+                <a href="#menu" class="group relative glow-button bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold py-5 px-12 rounded-full transition duration-300 text-lg overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <i class="fa-solid fa-fire"></i>
+                        اطلب الآن
+                        <i class="fa-solid fa-arrow-left transform group-hover:translate-x-1 transition"></i>
+                    </span>
+                </a>
+                <a href="#menu" class="glass-premium hover:bg-white/10 text-white font-bold py-5 px-12 rounded-full border border-gray-600/50 hover:border-amber-500/50 transition duration-300 text-lg backdrop-blur-xl">
+                    <i class="fa-solid fa-book-open ml-2"></i>
+                    تصفح المنيو
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="600">
+                <div class="stat-item">
+                    <div class="text-3xl md:text-4xl font-black gradient-text counter">2500+</div>
+                    <div class="text-gray-400 text-sm mt-1">طلب سعيد</div>
+                </div>
+                <div class="stat-item" style="animation-delay: 0.1s;">
+                    <div class="text-3xl md:text-4xl font-black gradient-text counter">4.9★</div>
+                    <div class="text-gray-400 text-sm mt-1">تقييم العملاء</div>
+                </div>
+                <div class="stat-item" style="animation-delay: 0.2s;">
+                    <div class="text-3xl md:text-4xl font-black gradient-text counter">30 د</div>
+                    <div class="text-gray-400 text-sm mt-1">وقت التوصيل</div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <section id="menu" class="py-24 max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-            <h2 class="text-4xl font-black text-amber-500 mb-2">قائمة الطعام</h2>
-            <div class="h-1 w-24 bg-gray-800 mx-auto rounded-full mt-4 overflow-hidden relative"><div class="h-full w-12 bg-amber-500 rounded-full absolute top-0 right-0 animate-pulse"></div></div>
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+            <a href="#menu" class="text-gray-400 hover:text-amber-500 transition">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </a>
         </div>
-        <div class="flex justify-center gap-3 flex-wrap mb-12" id="categories-container"></div>
-        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
 
-    <section id="about" class="py-24 bg-gray-800 relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
+    <!-- ============ MENU SECTION ============ -->
+    <section id="menu" class="py-24 relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+            <div class="absolute top-20 right-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 left-20 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl"></div>
+        </div>
+
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <!-- Section Header -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-amber-500 font-bold text-sm tracking-wider uppercase mb-2 block">
+                    <i class="fa-solid fa-utensils ml-2"></i>قائمة الطعام
+                </span>
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-4">
+                    اختر طبقك <span class="gradient-text">المفضل</span>
+                </h2>
+                <div class="flex justify-center gap-2 mt-6">
+                    <div class="h-1 w-12 bg-amber-500 rounded-full"></div>
+                    <div class="h-1 w-8 bg-amber-500/50 rounded-full"></div>
+                    <div class="h-1 w-4 bg-amber-500/30 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="flex justify-center gap-3 flex-wrap mb-12" id="categories-container" data-aos="fade-up" data-aos-delay="100"></div>
+
+            <!-- Menu Grid -->
+            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- ============ ABOUT SECTION ============ -->
+    <section id="about" class="py-24 relative overflow-hidden glass-premium">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Text Content -->
                 <div data-aos="fade-left">
-                    <h2 class="text-4xl font-black text-white mb-6">قصتنا <span class="text-amber-500">.</span></h2>
-                    <p class="text-gray-300 leading-loose mb-6 text-lg">نحن لا نقدم مجرد طعام، بل نقدم ثقافة وكرم ضيافة دمشقية أصيلة باستخدام أجود أنواع اللحوم الطازجة.</p>
+                    <span class="text-amber-500 font-bold text-sm tracking-wider uppercase mb-4 block">
+                        <i class="fa-solid fa-star ml-2"></i>عن المطعم
+                    </span>
+                    <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+                        قصة <span class="gradient-text">نجاح</span>
+                    </h2>
+                    <p class="text-gray-300 leading-loose mb-6 text-lg">
+                        <strong class="text-amber-500">دمشق جريل</strong> ليس مجرد مطعم، بل تجربة طعام متكاملة تجمع بين الأصالة والفخامة. نستخدم أجود أنواع اللحوم الطازجة والتوابل السورية الأصلية. 
+                    </p>
+                    <p class="text-gray-400 leading-loose mb-8">
+                        كل طبق نقدمه هو قصة نجاح صغيرة، محضّر بحب واهتمام من طهاة محترفين لديهم خبرة تزيد عن 15 عاماً في فن الشواء السوري.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex items-center gap-3 glass-premium p-4 rounded-xl border border-gray-700/50">
+                            <div class="bg-amber-500/10 p-3 rounded-lg">
+                                <i class="fa-solid fa-award text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">جودة مضمونة</h4>
+                                <p class="text-gray-400 text-xs">100% لحوم طازجة</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 glass-premium p-4 rounded-xl border border-gray-700/50">
+                            <div class="bg-amber-500/10 p-3 rounded-lg">
+                                <i class="fa-solid fa-truck-fast text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">توصيل سريع</h4>
+                                <p class="text-gray-400 text-xs">خلال 30 دقيقة</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 glass-premium p-4 rounded-xl border border-gray-700/50">
+                            <div class="bg-amber-500/10 p-3 rounded-lg">
+                                <i class="fa-solid fa-utensils text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">طعم أصيل</h4>
+                                <p class="text-gray-400 text-xs">وصفات سورية تقليدية</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 glass-premium p-4 rounded-xl border border-gray-700/50">
+                            <div class="bg-amber-500/10 p-3 rounded-lg">
+                                <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">نظافة تامة</h4>
+                                <p class="text-gray-400 text-xs">معايير صحية عالية</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Image -->
                 <div class="relative" data-aos="fade-right">
-                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="relative rounded-3xl shadow-2xl transform -rotate-3 hover:rotate-0 transition duration-500 w-full object-cover h-[400px]">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl blur-2xl"></div>
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         class="relative rounded-3xl shadow-2xl transform hover:scale-105 transition duration-700 w-full object-cover h-[500px] border border-gray-700/50"
+                         alt="Damascus Grill Food">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-6 -right-6 glass-premium p-6 rounded-2xl border border-amber-500/30 float-animation">
+                        <div class="text-center">
+                            <div class="text-4xl font-black gradient-text">15+</div>
+                            <div class="text-gray-300 text-sm font-bold mt-1">سنة خبرة</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-24 max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-            <h2 class="text-4xl font-black text-amber-500 mb-2">تواصل معنا</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-gray-800 p-8 rounded-2xl text-center border border-gray-700" data-aos="fade-up">
-                <i class="fa-solid fa-location-dot text-4xl text-amber-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2">العنوان</h3>
-                <p class="text-gray-400">دمياط الجديدة، الحي الأول</p>
+    <!-- ============ REVIEWS SECTION ============ -->
+    <section id="reviews" class="py-24 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-amber-500 font-bold text-sm tracking-wider uppercase mb-2 block">
+                    <i class="fa-solid fa-comments ml-2"></i>آراء العملاء
+                </span>
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-4">
+                    ماذا يقول <span class="gradient-text">عملاؤنا</span>
+                </h2>
+                <div class="flex justify-center gap-2 mt-6">
+                    <div class="h-1 w-12 bg-amber-500 rounded-full"></div>
+                    <div class="h-1 w-8 bg-amber-500/50 rounded-full"></div>
+                    <div class="h-1 w-4 bg-amber-500/30 rounded-full"></div>
+                </div>
             </div>
-            <div class="bg-gray-800 p-8 rounded-2xl text-center border border-gray-700" data-aos="fade-up" data-aos-delay="100">
-                <i class="fa-solid fa-phone text-4xl text-amber-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2">اتصل بنا</h3>
-                <p class="text-gray-400 dir-ltr text-lg font-bold">01555594743</p>
-            </div>
-            <div class="bg-gray-800 p-8 rounded-2xl text-center border border-gray-700" data-aos="fade-up" data-aos-delay="200">
-                <i class="fa-solid fa-clock text-4xl text-amber-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2">مواعيد العمل</h3>
-                <p class="text-gray-400">12:00 م - 2:00 ص</p>
+
+            <!-- Reviews Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card p-8 rounded-2xl border border-gray-700/50 hover:border-amber-500/30 transition duration-300" data-aos="fade-up">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center font-bold text-lg">م</div>
+                        <div>
+                            <h4 class="font-bold text-white">محمد علي</h4>
+                            <div class="text-amber-500 text-sm">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed">"أفضل شاورما في دمياط! الطعم رائع والتوصيل سريع جداً.  أنصح الجميع بتجربة فتة الشاورما ميكس 👌"</p>
+                </div>
+
+                <div class="testimonial-card p-8 rounded-2xl border border-gray-700/50 hover:border-amber-500/30 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center font-bold text-lg">س</div>
+                        <div>
+                            <h4 class="font-bold text-white">سارة أحمد</h4>
+                            <div class="text-amber-500 text-sm">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed">"جودة عالية جداً! المشويات طازجة والنكهة لذيذة. خدمة العملاء ممتازة.  دمشق جريل الخيار الأول دائماً 🔥"</p>
+                </div>
+
+                <div class="testimonial-card p-8 rounded-2xl border border-gray-700/50 hover:border-amber-500/30 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center font-bold text-lg">خ</div>
+                        <div>
+                            <h4 class="font-bold text-white">خالد حسن</h4>
+                            <div class="text-amber-500 text-sm">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed">"طعم سوري أصيل!  الكباب والكفتة خيالية.  التعامل راقي والأسعار مناسبة. تجربة رائعة ومتميزة 💯"</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
-        <div class="absolute left-0 top-0 h-full w-full md:w-[450px] bg-gray-900 border-r border-gray-800 shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-[-100%]" id="cart-panel">
-            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-800/50">
-                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-amber-500 text-3xl">.</span> سلة طلباتك</h2>
-                <button onclick="toggleCart()" class="text-gray-400 hover:text-red-500 transition text-2xl hover:rotate-90 duration-300"><i class="fa-solid fa-xmark"></i></button>
+    <!-- ============ CONTACT SECTION ============ -->
+    <section id="contact" class="py-24 glass-premium relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-amber-500 font-bold text-sm tracking-wider uppercase mb-2 block">
+                    <i class="fa-solid fa-location-dot ml-2"></i>تواصل معنا
+                </span>
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-4">
+                    نحن في <span class="gradient-text">خدمتك</span>
+                </h2>
+                <div class="flex justify-center gap-2 mt-6">
+                    <div class="h-1 w-12 bg-amber-500 rounded-full"></div>
+                    <div class="h-1 w-8 bg-amber-500/50 rounded-full"></div>
+                    <div class="h-1 w-4 bg-amber-500/30 rounded-full"></div>
+                </div>
             </div>
+
+            <!-- Contact Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-premium p-8 rounded-2xl text-center border border-gray-700/50 hover:border-amber-500/30 transition duration-300 group" data-aos="fade-up">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/10 mb-6 group-hover:bg-amber-500/20 transition duration-300">
+                        <i class="fa-solid fa-location-dot text-4xl text-amber-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">العنوان</h3>
+                    <p class="text-gray-400 leading-relaxed">دمياط الجديدة، الحي الأول<br>أمام الكورنيش مباشرة</p>
+                </div>
+
+                <div class="glass-premium p-8 rounded-2xl text-center border border-gray-700/50 hover:border-amber-500/30 transition duration-300 group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/10 mb-6 group-hover:bg-amber-500/20 transition duration-300">
+                        <i class="fa-solid fa-phone text-4xl text-amber-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">اتصل بنا</h3>
+                    <a href="tel:01555594743" class="text-amber-500 hover:text-amber-400 text-xl font-black dir-ltr block transition">01555594743</a>
+                    <p class="text-gray-400 text-sm mt-2">متاح طوال اليوم</p>
+                </div>
+
+                <div class="glass-premium p-8 rounded-2xl text-center border border-gray-700/50 hover:border-amber-500/30 transition duration-300 group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/10 mb-6 group-hover:bg-amber-500/20 transition duration-300">
+                        <i class="fa-solid fa-clock text-4xl text-amber-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">مواعيد العمل</h3>
+                    <p class="text-gray-400 leading-relaxed">كل يوم<br><span class="text-amber-500 font-bold">12:00 م - 2:00 ص</span></p>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="mt-16 text-center" data-aos="fade-up" data-aos-delay="300">
+                <h3 class="text-xl font-bold text-white mb-6">تابعنا على</h3>
+                <div class="flex justify-center gap-4">
+                    <a href="#" class="social-icon glass-premium w-14 h-14 rounded-full flex items-center justify-center text-gray-400 hover:text-green-500 hover:bg-green-500/10 border border-gray-700/50 hover:border-green-500/30">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    </a>
+                    <a href="#" class="social-icon glass-premium w-14 h-14 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 border border-gray-700/50 hover:border-blue-500/30">
+                        <i class="fa-brands fa-facebook text-2xl"></i>
+                    </a>
+                    <a href="#" class="social-icon glass-premium w-14 h-14 rounded-full flex items-center justify-center text-gray-400 hover:text-pink-500 hover:bg-pink-500/10 border border-gray-700/50 hover:border-pink-500/30">
+                        <i class="fa-brands fa-instagram text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CART MODAL ============ -->
+    <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="toggleCart()"></div>
+        <div class="cart-slide absolute left-0 top-0 h-full w-full md:w-[480px] glass-premium shadow-2xl flex flex-col translate-x-[-100%] border-r border-gray-700/50" id="cart-panel">
+            
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-700/50 bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-xl">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-white flex items-center gap-3">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        سلة طلباتك
+                    </h2>
+                    <button onclick="toggleCart()" class="text-gray-400 hover:text-red-500 transition text-2xl hover:rotate-90 duration-300 glass-premium w-10 h-10 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <p class="text-gray-400 text-sm mt-2">راجع طلبك قبل الإرسال</p>
+            </div>
+
+            <!-- Items -->
             <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
-            <div class="p-6 bg-gray-800 border-t border-gray-700">
-                <div class="flex justify-between text-xl font-bold mb-6 text-white"><span>الإجمالي:</span><span class="text-amber-500" id="cart-total">0 ج.م</span></div>
-                <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition flex justify-center items-center gap-2"><i class="fa-brands fa-whatsapp text-2xl"></i> إتمام الطلب</button>
+
+            <!-- Footer -->
+            <div class="p-6 bg-gradient-to-t from-gray-900 to-gray-800/50 border-t border-gray-700/50 backdrop-blur-xl">
+                <!-- Delivery Info -->
+                <div class="glass-premium p-4 rounded-xl mb-4 border border-gray-700/50">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-400 flex items-center gap-2">
+                            <i class="fa-solid fa-truck-fast text-amber-500"></i>
+                            رسوم التوصيل
+                        </span>
+                        <span class="text-green-500 font-bold">مجاناً</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="flex justify-between items-center text-2xl font-black mb-6">
+                    <span class="text-white">الإجمالي: </span>
+                    <span class="gradient-text" id="cart-total">0 ج.م</span>
+                </div>
+
+                <!-- Checkout Button -->
+                <button onclick="checkout()" class="w-full glow-button bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-5 rounded-2xl transition flex justify-center items-center gap-3 text-lg group">
+                    <i class="fa-brands fa-whatsapp text-2xl group-hover:scale-110 transition"></i>
+                    إتمام الطلب عبر واتساب
+                    <i class="fa-solid fa-arrow-left transform group-hover:translate-x-1 transition"></i>
+                </button>
+
+                <p class="text-center text-gray-500 text-xs mt-4">
+                    <i class="fa-solid fa-shield-halved ml-1"></i>
+                    طلبك محمي ومضمون 100%
+                </p>
             </div>
         </div>
     </div>
 
-    <footer class="bg-black pt-16 pb-8 border-t border-gray-800 mt-10">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold text-white mb-6">Damascus <span class="text-amber-500">Grill</span></h2>
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-600 text-sm">© 2026 جميع الحقوق محفوظة</p>
-                <p class="text-gray-600 text-sm flex items-center gap-2">تطوير وتصميم <a href="https://ahmeddowedar.engineer/" class="text-gray-400 hover:text-amber-500 font-bold transition flex items-center gap-1 group">Ahmed Dowedar <i class="fa-solid fa-code text-xs text-amber-500 group-hover:animate-bounce"></i></a></p>
+    <!-- ============ FOOTER ============ -->
+    <footer class="bg-black/50 backdrop-blur-xl pt-16 pb-8 border-t border-gray-800/50 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-1 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+        
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Footer Top -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-gradient-to-br from-amber-500 to-amber-600 p-3 rounded-2xl">
+                            <i class="fa-solid fa-fire text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white">
+                            دمشق <span class="text-amber-500">جريل</span>
+                        </h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                        أصالة الطعم السوري في كل قضمة.  نقدم لك تجربة طعام لا تُنسى مع أفضل المشويات والشاورما.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="social-icon glass-premium w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-green-500 hover:bg-green-500/10 border border-gray-700/50">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="social-icon glass-premium w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 border border-gray-700/50">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+                        <a href="#" class="social-icon glass-premium w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-pink-500 hover:bg-pink-500/10 border border-gray-700/50">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-amber-500 rounded-full"></span>
+                        روابط سريعة
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="#menu" class="text-gray-400 hover:text-amber-500 transition flex items-center gap-2 group"><i class="fa-solid fa-chevron-left text-xs transform group-hover:translate-x-1 transition"></i>المنيو</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-amber-500 transition flex items-center gap-2 group"><i class="fa-solid fa-chevron-left text-xs transform group-hover:translate-x-1 transition"></i>قصتنا</a></li>
+                        <li><a href="#reviews" class="text-gray-400 hover:text-amber-500 transition flex items-center gap-2 group"><i class="fa-solid fa-chevron-left text-xs transform group-hover:translate-x-1 transition"></i>التقييمات</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-amber-500 transition flex items-center gap-2 group"><i class="fa-solid fa-chevron-left text-xs transform group-hover:translate-x-1 transition"></i>تواصل معنا</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-amber-500 rounded-full"></span>
+                        معلومات التواصل
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="text-gray-400 flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-amber-500 mt-1"></i>
+                            <span>دمياط الجديدة، الحي الأول</span>
+                        </li>
+                        <li class="text-gray-400 flex items-start gap-3">
+                            <i class="fa-solid fa-phone text-amber-500 mt-1"></i>
+                            <a href="tel:01555594743" class="hover:text-amber-500 transition dir-ltr font-bold">01555594743</a>
+                        </li>
+                        <li class="text-gray-400 flex items-start gap-3">
+                            <i class="fa-solid fa-clock text-amber-500 mt-1"></i>
+                            <span>12:00 م - 2:00 ص (يومياً)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-800/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">© 2026 دمشق جريل.  جميع الحقوق محفوظة</p>
+                <p class="text-gray-500 text-sm flex items-center gap-2">
+                    تطوير وتصميم 
+                    <a href="https://ahmeddowedar.engineer/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-amber-500 font-bold transition flex items-center gap-1 group">
+                        Ahmed Dowedar 
+                        <i class="fa-solid fa-code text-xs text-amber-500 group-hover:scale-110 transition"></i>
+                    </a>
+                </p>
             </div>
         </div>
     </footer>
 
+    <!-- ============ JAVASCRIPT ============ -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ once: true, offset: 50 });
+        // Initialize AOS
+        AOS.init({ 
+            once: true, 
+            offset: 80,
+            duration: 800,
+            easing: 'ease-out-cubic'
+        });
 
-        // --- Configuration Update (Phone Number) ---
-        const restaurantPhone = "201555594743"; // الرقم مضاف إليه كود الدولة بدون +
+        // Configuration
+        const restaurantPhone = "201555594743";
         
-        const categories = ["الكل", "شاورما", "مشويات", "غربي", "مشروبات"];
+        // Menu Data
+        const categories = ["الكل", "شاورما", "مشويات", "غربي", "مشروبات", "حلويات"];
         const menuItems = [
-            { id: 1, name: "شاورما دجاج عربي", price: 85, category: "شاورما", img: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=500", desc: "وجبة عربي دوبل مع الثومية والبطاطس" },
-            { id: 2, name: "شاورما لحم صاج", price: 95, category: "شاورما", img: "https://images.unsplash.com/photo-1625944230945-1b7ddf36c97c?w=500", desc: "عيش صاج سوري مع طحينة ودبس رمان" },
-            { id: 3, name: "فتة شاورما ميكس", price: 110, category: "شاورما", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500", desc: "أرز بسمتي، عيش محمص، شاورما وصوص" },
-            { id: 4, name: "كيلو كباب وكفتة", price: 450, category: "مشويات", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", desc: "مشكل فاخر مع السلطات والعيش" },
-            { id: 5, name: "نصف دجاجة مسحب", price: 120, category: "مشويات", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500", desc: "على الفحم مع خلطة دمشق السرية" },
-            { id: 6, name: "برجر دمشق العملاق", price: 130, category: "غربي", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500", desc: "200 جرام لحم بلدي مع صوص الجبنة" },
-            { id: 7, name: "عصير مانجو فريش", price: 40, category: "مشروبات", img: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=500", desc: "مانجو عويس طبيعي 100%" },
+            { id: 1, name: "شاورما دجاج عربي", price: 85, category: "شاورما", img: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=500", desc: "وجبة عربي دوبل مع الثومية والبطاطس المقرمشة" },
+            { id: 2, name: "شاورما لحم صاج", price: 95, category: "شاورما", img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500", desc: "عيش صاج سوري أصلي مع طحينة ودبس رمان" },
+            { id: 3, name: "فتة شاورما ميكس", price: 110, category: "شاورما", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500", desc: "أرز بسمتي، عيش محمص، شاورما دجاج ولحم" },
+            { id: 4, name: "سندوتش شاورما سوبر", price: 75, category: "شاورما", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500", desc: "سندوتش كبير محشو بالشاورما والبطاطس" },
+            { id: 5, name: "كيلو كباب وكفتة", price: 450, category: "مشويات", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", desc: "مشكل فاخر مع السلطات والعيش البلدي" },
+            { id: 6, name: "نصف دجاجة مسحب", price: 120, category: "مشويات", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500", desc: "على الفحم مع خلطة دمشق السرية" },
+            { id: 7, name: "فراخ مشوية كاملة", price: 210, category: "مشويات", img: "https://images.unsplash.com/photo-1594221708779-94832f4320d1?w=500", desc: "دجاجة كاملة مشوية مع الأرز والسلطات" },
+            { id: 8, name: "ريش غنم مشوية", price: 380, category: "مشويات", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500", desc: "كيلو ريش غنم طازجة على الفحم" },
+            { id: 9, name: "برجر دمشق العملاق", price: 130, category: "غربي", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500", desc: "200 جرام لحم بلدي مع صوص الجبنة الخاص" },
+            { id: 10, name: "كريسبي تشيكن", price: 115, category: "غربي", img: "https://images.unsplash.com/photo-1562007908-17c67e878c88?w=500", desc: "قطع دجاج مقرمشة مع البطاطس والكولسلو" },
+            { id: 11, name: "بيتزا سوبر سوبريم", price: 140, category: "غربي", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500", desc: "بيتزا كبيرة بجبنة الموزاريلا الفاخرة" },
+            { id: 12, name: "باستا الفريدو", price: 95, category: "غربي", img: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500", desc: "معكرونة فيتوتشيني بصوص الكريمة والدجاج" },
+            { id: 13, name: "عصير مانجو فريش", price: 40, category: "مشروبات", img: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=500", desc: "مانجو عويس طبيعي 100%" },
+            { id: 14, name: "موهيتو فراولة", price: 45, category: "مشروبات", img: "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=500", desc: "مشروب منعش بالفراولة والنعناع" },
+            { id: 15, name: "ليموناضة بالنعناع", price: 30, category: "مشروبات", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500", desc: "ليمون طبيعي مع نعناع طازج" },
+            { id: 16, name: "ميلك شيك أوريو", price: 50, category: "مشروبات", img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500", desc: "آيس كريم فانيليا مع بسكويت أوريو" },
+            { id: 17, name: "كنافة نابلسية", price: 65, category: "حلويات", img: "https://images.unsplash.com/photo-1534432182912-63863115e106?w=500", desc: "كنافة طازجة بالجبنة والقطر" },
+            { id: 18, name: "بقلاوة فاخرة", price: 70, category: "حلويات", img: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=500", desc: "بقلاوة محشوة بالفستق الحلبي" },
         ];
 
         let cart = [];
         let activeCategory = "الكل";
 
-        function init() { renderCategories(); renderMenu(); }
+        // Initialize
+        function init() {
+            renderCategories();
+            renderMenu();
+            setupParallax();
+            setupImageLoading();
+        }
 
+        // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const icon = document.getElementById('burger-icon');
+            
             if (menu.classList.contains('max-h-0')) {
-                menu.classList.remove('max-h-0'); menu.classList.add('max-h-screen');
-                icon.classList.remove('fa-bars-staggered'); icon.classList.add('fa-xmark');
+                menu.classList.remove('max-h-0');
+                menu.classList.add('max-h-screen');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
             } else {
-                menu.classList.add('max-h-0'); menu.classList.remove('max-h-screen');
-                icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars-staggered');
+                menu.classList.add('max-h-0');
+                menu.classList.remove('max-h-screen');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
             }
         }
 
+        // Render Categories
         function renderCategories() {
-            document.getElementById('categories-container').innerHTML = categories.map(cat => `
-                <button onclick="setCategory('${cat}')" class="${activeCategory === cat ? 'bg-amber-500 text-black border-amber-500' : 'bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700'} px-5 py-2 rounded-full font-bold transition-all duration-300 border text-sm">${cat}</button>
+            const container = document.getElementById('categories-container');
+            container.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="setCategory('${cat}')" 
+                    class="category-badge ${activeCategory === cat 
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black border-amber-400 shadow-lg shadow-amber-500/30' 
+                        : 'glass-premium text-gray-300 border-gray-700/50 hover:border-amber-500/30'} 
+                    px-6 py-3 rounded-full font-bold transition-all duration-300 border text-sm"
+                >
+                    ${cat}
+                </button>
             `).join('');
         }
 
+        // Render Menu
         function renderMenu() {
-            const filtered = activeCategory === "الكل" ? menuItems : menuItems.filter(i => i.category === activeCategory);
-            document.getElementById('menu-grid').innerHTML = filtered.map((item, index) => `
-                <div class="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 group shadow-lg hover:border-amber-500/30 transition-all duration-300" data-aos="fade-up" data-aos-delay="${index * 50}">
-                    <div class="relative h-52 overflow-hidden">
-                        <img src="${item.img}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-80"></div>
-                        <span class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-amber-500 font-bold px-3 py-1 rounded-lg border border-gray-600">${item.price} ج.م</span>
+            const filtered = activeCategory === "الكل" 
+                ? menuItems 
+                : menuItems.filter(i => i.category === activeCategory);
+            
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = filtered.map((item, index) => `
+                <div class="premium-card glass-premium rounded-2xl overflow-hidden border border-gray-700/50" 
+                      data-aos="fade-up" 
+                      data-aos-delay="${index * 50}">
+                    
+                    <!-- Image -->
+                    <div class="relative h-56 overflow-hidden bg-gray-800">
+                        <img src="${item.img}" 
+                             class="zoom-image w-full h-full object-cover" 
+                             alt="${item.name}" 
+                             loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
+                        
+                        <!-- Price Badge -->
+                        <div class="absolute bottom-4 right-4 price-tag text-black font-black px-4 py-2 rounded-xl text-lg">
+                            ${item.price} ج.م
+                        </div>
+
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 right-4 glass-premium px-3 py-1 rounded-lg border border-gray-600/50">
+                            <span class="text-amber-500 text-xs font-bold">${item.category}</span>
+                        </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-bold text-white mb-1">${item.name}</h3>
-                        <p class="text-gray-400 text-xs mb-4 h-8 overflow-hidden line-clamp-2">${item.desc}</p>
-                        <button onclick="addToCart(${item.id})" class="w-full bg-gray-700/50 hover:bg-amber-500 hover:text-black text-gray-300 font-bold py-2.5 rounded-xl transition duration-300 flex justify-center items-center gap-2 border border-gray-600 hover:border-amber-500"><i class="fa-solid fa-plus"></i> إضافة</button>
+
+                    <!-- Content -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2 leading-tight">${item.name}</h3>
+                        <p class="text-gray-400 text-sm mb-5 leading-relaxed h-10 overflow-hidden">${item.desc}</p>
+                        
+                        <!-- Add Button -->
+                        <button 
+                            onclick="addToCart(${item.id})" 
+                            class="w-full bg-gradient-to-r from-gray-700/50 to-gray-800/50 hover:from-amber-500 hover:to-amber-600 text-gray-300 hover:text-black font-bold py-3.5 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 border border-gray-600/50 hover:border-amber-500 group">
+                            <i class="fa-solid fa-cart-plus transform group-hover:scale-110 transition"></i>
+                            إضافة للسلة
+                            <i class="fa-solid fa-arrow-left transform group-hover:translate-x-1 transition opacity-0 group-hover:opacity-100"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Setup image loading for new images
+            setupImageLoading();
+        }
+
+        // Set Category
+        function setCategory(cat) {
+            activeCategory = cat;
+            renderCategories();
+            renderMenu();
+        }
+
+        // Add to Cart
+        function addToCart(id) {
+            const item = menuItems.find(i => i.id === id);
+            const exist = cart.find(i => i.id === id);
+            
+            if (exist) {
+                exist.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            
+            updateCartUI();
+            
+            // Success notification
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#1e293b',
+                color: '#fff',
+                iconColor: '#10b981',
+                customClass: {
+                    popup: 'glass-premium border border-gray-700/50'
+                }
+            }).fire({
+                icon: 'success',
+                title: `تمت إضافة ${item.name}`,
+                text: 'إلى سلة المشتريات'
+            });
+        }
+
+        // Remove from Cart
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            updateCartUI();
+            
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                background: '#1e293b',
+                color: '#fff',
+                iconColor: '#ef4444'
+            }).fire({
+                icon: 'info',
+                title: 'تم حذف المنتج من السلة'
+            });
+        }
+
+        // Update Quantity
+        function updateQty(id, change) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    removeFromCart(id);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            const badge = document.getElementById('cart-badge');
+            
+            const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            
+            badge.innerText = totalQty;
+            badge.style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
+            totalEl.innerText = total.toLocaleString('ar-EG') + ' ج.م';
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 mt-20">
+                        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full glass-premium mb-6 border border-gray-700/50">
+                            <i class="fa-solid fa-basket-shopping text-5xl opacity-30"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-400 mb-2">السلة فارغة</h3>
+                        <p class="text-gray-500 text-sm">أضف بعض المشويات اللذيذة! </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = cart.map(i => `
+                <div class="glass-premium p-4 rounded-xl border border-gray-700/50 hover:border-amber-500/30 transition duration-300 group">
+                    <div class="flex gap-4">
+                        <!-- Image -->
+                        <div class="relative flex-shrink-0">
+                            <img src="${i.img}" class="w-20 h-20 rounded-xl object-cover shadow-lg border border-gray-700/50" alt="${i.name}" loading="lazy">
+                            <div class="absolute -top-2 -right-2 bg-amber-500 text-black text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-gray-900">
+                                ${i.qty}
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-white text-sm mb-1 truncate">${i.name}</h4>
+                            <p class="text-gray-400 text-xs mb-2">${i.category}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="gradient-text text-lg font-black">${(i.price * i.qty).toLocaleString('ar-EG')} ج.م</span>
+                                
+                                <!-- Quantity Controls -->
+                                <div class="flex items-center gap-2 glass-premium rounded-lg p-1 border border-gray-700/50">
+                                    <button 
+                                        onclick="updateQty(${i.id}, -1)" 
+                                        class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-red-500/20 rounded transition">
+                                        <i class="fa-solid fa-minus text-xs"></i>
+                                    </button>
+                                    <span class="text-sm font-bold w-6 text-center text-white">${i.qty}</span>
+                                    <button 
+                                        onclick="updateQty(${i.id}, 1)" 
+                                        class="w-7 h-7 flex items-center justify-center text-amber-500 hover:text-white hover:bg-amber-500/20 rounded transition">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Remove Button -->
+                        <button 
+                            onclick="removeFromCart(${i.id})" 
+                            class="flex-shrink-0 text-gray-500 hover:text-red-500 transition self-start opacity-0 group-hover:opacity-100">
+                            <i class="fa-solid fa-trash text-sm"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function setCategory(cat) { activeCategory = cat; renderCategories(); renderMenu(); }
-
-        function addToCart(id) {
-            const item = menuItems.find(i => i.id === id);
-            const exist = cart.find(i => i.id === id);
-            if (exist) exist.qty++; else cart.push({ ...item, qty: 1 });
-            updateCartUI();
-            Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, timerProgressBar: true, background: '#1f2937', color: '#fff' }).fire({ icon: 'success', title: 'تمت الإضافة للسلة' });
-        }
-
-        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); }
-        function updateQty(id, change) { const item = cart.find(i => i.id === id); if (item) { item.qty += change; if (item.qty <= 0) removeFromCart(id); else updateCartUI(); } }
-
-        function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            const totalEl = document.getElementById('cart-total');
-            const badge = document.getElementById('cart-badge');
-            const totalQty = cart.reduce((s, i) => s + i.qty, 0);
-            badge.innerText = totalQty; badge.style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            totalEl.innerText = total + ' ج.م';
-            if (cart.length === 0) { container.innerHTML = `<div class="text-center text-gray-600 mt-10"><i class="fa-solid fa-basket-shopping text-4xl mb-3 opacity-50"></i><p>أضف بعض المشويات اللذيذة!</p></div>`; return; }
-            container.innerHTML = cart.map(i => `
-                <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded-xl border border-gray-700 hover:border-gray-600 transition">
-                    <div class="flex items-center gap-3"><img src="${i.img}" class="w-12 h-12 rounded-lg object-cover shadow-sm"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><span class="text-amber-500 text-xs">${i.price * i.qty} ج.م</span></div></div>
-                    <div class="flex items-center gap-2 bg-gray-900 rounded-lg p-1 border border-gray-700"><button onclick="updateQty(${i.id}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-white transition">-</button><span class="text-xs font-bold w-4 text-center text-white">${i.qty}</span><button onclick="updateQty(${i.id}, 1)" class="w-6 h-6 flex items-center justify-center text-amber-500 hover:text-white transition">+</button></div>
-                </div>`).join('');
-        }
-
+        // Toggle Cart
         function toggleCart() {
-            const modal = document.getElementById('cart-modal'); const panel = document.getElementById('cart-panel');
-            if (modal.classList.contains('hidden')) { modal.classList.remove('hidden'); setTimeout(() => panel.classList.remove('translate-x-[-100%]'), 10); } 
-            else { panel.classList.add('translate-x-[-100%]'); setTimeout(() => modal.classList.add('hidden'), 300); }
-        }
-
-        // --- NEW PROFESSIONAL CHECKOUT FUNCTION ---
-        async function checkout() {
-            if (cart.length === 0) return;
+            const modal = document.getElementById('cart-modal');
+            const panel = document.getElementById('cart-panel');
             
-            const { value: form } = await Swal.fire({ 
-                title: 'بيانات التوصيل', 
-                html: '<input id="swal-name" class="swal2-input" placeholder="اسمك الكريم" style="margin-bottom:10px; direction: rtl;">' +
-                      '<input id="swal-address" class="swal2-input" placeholder="العنوان بالتفصيل" style="direction: rtl;">', 
-                focusConfirm: false, 
-                background: '#1f2937', 
-                color: '#fff', 
-                confirmButtonColor: '#d97706', 
-                confirmButtonText: 'تأكيد الطلب واتساب', 
-                preConfirm: () => [document.getElementById('swal-name').value, document.getElementById('swal-address').value] 
-            });
-
-            if (form) {
-                const [name, address] = form; 
-                const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-                const date = new Date().toLocaleDateString('ar-EG');
-                
-                // Professional Message Format
-                let msg = `*🔥 طلب جديد من الموقع 🔥*%0a`;
-                msg += `📅 *التاريخ:* ${date}%0a`;
-                msg += `👤 *العميل:* ${name || 'زائر'}%0a`;
-                msg += `📍 *العنوان:* ${address || 'استلام من المطعم'}%0a`;
-                msg += `%0a*🧾 تفاصيل الأوردر:*%0a`;
-                msg += `━━━━━━━━━━━━%0a`;
-                
-                cart.forEach(item => {
-                    msg += `▫️ *${item.qty}x* ${item.name}  |  ${item.price * item.qty} ج.م%0a`;
-                });
-                
-                msg += `━━━━━━━━━━━━%0a`;
-                msg += `💰 *الإجمالي النهائي: ${total} جنيه* %0a`;
-                msg += `%0a✅ *يرجى تأكيد الاستلام*`;
-
-                window.open(`https://wa.me/${restaurantPhone}?text=${msg}`, '_blank'); 
-                
-                cart = []; updateCartUI(); toggleCart();
-                Swal.fire({icon:'success', title:'تم إرسال الطلب بنجاح', text: 'سيتم التواصل معك فوراً', background:'#1f2937', color:'#fff', confirmButtonColor:'#d97706'});
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => panel.classList.remove('translate-x-[-100%]'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                panel.classList.add('translate-x-[-100%]');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }, 300);
             }
         }
 
+        // Checkout Function
+        async function checkout() {
+            if (cart.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'السلة فارغة! ',
+                    text: 'من فضلك أضف بعض المنتجات أولاً',
+                    background: '#1e293b',
+                    color: '#fff',
+                    confirmButtonColor: '#f59e0b',
+                    confirmButtonText: 'حسناً'
+                });
+                return;
+            }
+            
+            const { value: form } = await Swal.fire({
+                title: '<strong class="text-white">بيانات التوصيل</strong>',
+                html: `
+                    <div class="space-y-4 mt-6">
+                        <div class="text-right">
+                            <label class="text-gray-300 text-sm block mb-2">الاسم الكريم <span class="text-red-500">*</span></label>
+                            <input id="swal-name" class="swal2-input w-full" placeholder="أدخل اسمك" style="direction: rtl; background: rgba(30, 41, 59, 0.5); border: 1px solid #374151; color: white;">
+                        </div>
+                        <div class="text-right">
+                            <label class="text-gray-300 text-sm block mb-2">رقم الهاتف <span class="text-red-500">*</span></label>
+                            <input id="swal-phone" type="tel" class="swal2-input w-full" placeholder="01XXXXXXXXX" style="direction: ltr; background: rgba(30, 41, 59, 0.5); border: 1px solid #374151; color: white;">
+                        </div>
+                        <div class="text-right">
+                            <label class="text-gray-300 text-sm block mb-2">العنوان بالتفصيل <span class="text-red-500">*</span></label>
+                            <textarea id="swal-address" class="swal2-textarea w-full" placeholder="الشارع - رقم المبنى - دور - شقة" style="direction: rtl; background: rgba(30, 41, 59, 0.5); border: 1px solid #374151; color: white; min-height: 80px;"></textarea>
+                        </div>
+                        <div class="text-right">
+                            <label class="text-gray-300 text-sm block mb-2">ملاحظات إضافية (اختياري)</label>
+                            <input id="swal-notes" class="swal2-input w-full" placeholder="أي طلبات خاصة؟" style="direction: rtl; background: rgba(30, 41, 59, 0.5); border: 1px solid #374151; color: white;">
+                        </div>
+                    </div>
+                `,
+                focusConfirm: false,
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonColor: '#10b981',
+                confirmButtonText: '<i class="fa-brands fa-whatsapp ml-2"></i> إرسال الطلب',
+                cancelButtonText: 'إلغاء',
+                showCancelButton: true,
+                cancelButtonColor: '#6b7280',
+                width: '600px',
+                customClass: {
+                    popup: 'glass-premium border border-gray-700/50',
+                    confirmButton: 'glow-button',
+                },
+                preConfirm: () => {
+                    const name = document.getElementById('swal-name').value;
+                    const phone = document.getElementById('swal-phone').value;
+                    const address = document.getElementById('swal-address').value;
+                    const notes = document.getElementById('swal-notes').value;
+                    
+                    if (!name || !phone || !address) {
+                        Swal.showValidationMessage('من فضلك املأ جميع الحقول المطلوبة');
+                        return false;
+                    }
+                    
+                    if (!/^01[0-2,5]{1}[0-9]{8}$/.test(phone)) {
+                        Swal.showValidationMessage('رقم الهاتف غير صحيح');
+                        return false;
+                    }
+                    
+                    return { name, phone, address, notes };
+                }
+            });
+
+            if (form) {
+                const { name, phone, address, notes } = form;
+                const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+                const date = new Date().toLocaleDateString('ar-EG', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Professional WhatsApp Message
+                let msg = `━━━━━━━━━━━━━━━━━━━%0a`;
+                msg += `*🔥 طلب جديد من الموقع 🔥*%0a`;
+                msg += `━━━━━━━━━━━━━━━━━━━%0a%0a`;
+                
+                msg += `*📅 التاريخ والوقت: *%0a${date}%0a%0a`;
+                
+                msg += `*👤 بيانات العميل:*%0a`;
+                msg += `▫️ الاسم: *${name}*%0a`;
+                msg += `▫️ الهاتف: *${phone}*%0a`;
+                msg += `▫️ العنوان: ${address}%0a`;
+                if (notes) msg += `▫️ ملاحظات:  _${notes}_%0a`;
+                msg += `%0a`;
+                
+                msg += `*🍽️ تفاصيل الأوردر:*%0a`;
+                msg += `━━━━━━━━━━━━━━━━━━━%0a`;
+                
+                cart.forEach((item, index) => {
+                    msg += `*${index + 1}. * ${item.name}%0a`;
+                    msg += `   ⚡ الكمية: *${item.qty}*%0a`;
+                    msg += `   💰 السعر: ${item.price} ج.م%0a`;
+                    msg += `   📊 المجموع: *${item.price * item.qty} ج.م*%0a`;
+                    msg += `%0a`;
+                });
+                
+                msg += `━━━━━━━━━━━━━━━━━━━%0a`;
+                msg += `*💵 الإجمالي الكلي: ${total.toLocaleString('ar-EG')} جنيه*%0a`;
+                msg += `🚚 *رسوم التوصيل:  مجاناً ✅*%0a`;
+                msg += `━━━━━━━━━━━━━━━━━━━%0a%0a`;
+                
+                msg += `✅ *يرجى تأكيد الطلب والوقت المتوقع للتوصيل*%0a%0a`;
+                msg += `_تم الإرسال من موقع دمشق جريل_`;
+
+                // Show loading
+                Swal.fire({
+                    title: 'جاري إرسال الطلب...',
+                    html: 'سيتم تحويلك لواتساب خلال ثوانٍ',
+                    timerProgressBar: true,
+                    timer: 2000,
+                    background: '#1e293b',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                }).then(() => {
+                    // Open WhatsApp
+                    window.open(`https://wa.me/${restaurantPhone}?text=${msg}`, '_blank');
+                    
+                    // Clear cart
+                    cart = [];
+                    updateCartUI();
+                    toggleCart();
+                    
+                    // Success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم إرسال الطلب بنجاح!  🎉',
+                        html: `
+                            <div class="text-right mt-4">
+                                <p class="text-gray-300 mb-3">شكراً لثقتك في <strong class="text-amber-500">دمشق جريل</strong></p>
+                                <p class="text-gray-400 text-sm">سيتم التواصل معك فوراً لتأكيد الطلب</p>
+                                <div class="mt-4 p-4 glass-premium rounded-xl border border-gray-700/50">
+                                    <p class="text-xs text-gray-400">
+                                        <i class="fa-solid fa-info-circle text-amber-500 ml-1"></i>
+                                        وقت التوصيل المتوقع: 30-45 دقيقة
+                                    </p>
+                                </div>
+                            </div>
+                        `,
+                        background: '#1e293b',
+                        color: '#fff',
+                        confirmButtonColor: '#f59e0b',
+                        confirmButtonText: 'رائع! ',
+                        customClass: {
+                            popup: 'glass-premium border border-gray-700/50'
+                        }
+                    });
+                });
+            }
+        }
+
+        // Navbar Scroll Effect
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 20) { nav.classList.add('glass', 'shadow-lg'); nav.classList.remove('py-4'); nav.classList.add('py-3'); } 
-            else { nav.classList.remove('glass', 'shadow-lg', 'py-3'); nav.classList.add('py-4'); }
+            
+            if (window.scrollY > 50) {
+                nav.classList.add('glass-premium', 'shadow-2xl', 'py-3');
+                nav.classList.remove('py-5');
+            } else {
+                nav.classList.remove('glass-premium', 'shadow-2xl', 'py-3');
+                nav.classList.add('py-5');
+            }
         });
 
+        // Parallax Effect (Fixed)
+        function setupParallax() {
+            const heroImage = document.querySelector('.parallax-hero');
+            
+            if (heroImage) {
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.pageYOffset;
+                    const speed = 0.5;
+                    
+                    if (scrolled < window.innerHeight) {
+                        heroImage.style.transform = `translateY(${scrolled * speed}px) scale(1.1)`;
+                    }
+                });
+            }
+        }
+
+        // Setup Image Loading
+        function setupImageLoading() {
+            const images = document.querySelectorAll('img');
+            
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', function() {
+                        this.classList.add('loaded');
+                    });
+                    img.addEventListener('error', function() {
+                        this.classList.add('loaded');
+                        // Set placeholder on error
+                        this.src = 'https://placehold.co/500x500/1e293b/FFF?text=Image+Not+Found';
+                    });
+                }
+            });
+        }
+
+        // Close mobile menu when clicking on link
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileLinks = document.querySelectorAll('#mobile-menu a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const menu = document.getElementById('mobile-menu');
+                    if (!menu.classList.contains('max-h-0')) {
+                        toggleMobileMenu();
+                    }
+                });
+            });
+        });
+
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close cart when pressing Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('cart-modal');
+                if (!modal.classList.contains('hidden')) {
+                    toggleCart();
+                }
+            }
+        });
+
+        // Preload critical images
+        window.addEventListener('load', () => {
+            menuItems.forEach(item => {
+                const img = new Image();
+                img.src = item.img;
+            });
+        });
+
+        // Initialize everything
         init();
+
+        // Console branding
+        console.log('%c🔥 دمشق جريل 🔥', 'color: #f59e0b; font-size: 24px; font-weight: bold;');
+        console.log('%cتم التطوير بواسطة Ahmed Dowedar', 'color: #10b981; font-size: 12px;');
+        console.log('%chttps://ahmeddowedar.engineer/', 'color: #6b7280; font-size: 10px;');
     </script>
 </body>
 </html>
